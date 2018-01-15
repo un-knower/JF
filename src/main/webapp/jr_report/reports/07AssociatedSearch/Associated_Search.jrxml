@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="关联方证券经纪业务情况表" pageWidth="850" pageHeight="280" whenNoDataType="AllSectionsNoDetail" columnWidth="850" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="99f07307-27d4-499f-b61b-894610fa2d7a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CT_Kylin"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="net.sf.jasperreports.export.html.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.html.id" value="CaiTongSalesDaily"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="4"/>
+	<style name="Report_Title" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#29203D"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+		</box>
+	</style>
+	<style name="Report_Header" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#35304D"/>
+		</box>
+	</style>
+	<style name="Report_Detail" mode="Opaque" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="9">
+		<box>
+			<pen lineWidth="1.0" lineColor="#46425B"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+		</box>
+	</style>
+	<parameter name="startDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="branchNo" class="java.lang.String"/>
+	<parameter name="indexId" class="java.lang.String"/>
+	<parameter name="startDate1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="customerNo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopBranchNo" class="java.lang.String"/>
+	<parameter name="prodCode" class="java.lang.String"/>
+	<parameter name="idNo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[with
+base1 as(
+select ID_NO,
+       CUST_STATUS,
+       MARGIN_TRADE_BALANCE
+FROM CASHCLIENT.RELATED_TRADE_STATISTICS
+WHERE INIT_DATE = $P!{endDate}
+      and $P!{idNo}),
+base2 as(
+select a.CUST_NAME,a.ID_NO,
+       max(CUST_STATUS) as CUST_STATUS,
+       sum(a.STOCK_COMMISSION) as STOCK_COMMISSION,
+       sum(a.STOCK_AMOUNT) as STOCK_AMOUNT,
+       (case when sum(a.STOCK_COMMISSION) = 0 or sum(a.STOCK_COMMISSION) is null then 0.0
+            when sum(a.STOCK_AMOUNT) = 0 or sum(a.STOCK_AMOUNT) is null then 9999999999.0
+       else sum(a.STOCK_COMMISSION)/sum(a.STOCK_AMOUNT)*1000 end) as STOCK_COMMISSION_RATE,
+       sum(a.MARGIN_TRADE_INTEREST_EXPENSE) as MARGIN_TRADE_INTEREST_EXPENSE,
+       sum(a.COMMON_STOCK_COMMISSION) as COMMON_STOCK_COMMISSION,
+       sum(a.OPEN_FUND_COMMISSION) as OPEN_FUND_COMMISSION
+from CASHCLIENT.RELATED_TRADE_STATISTICS a
+where a.INIT_DATE between $P!{startDate} and $P!{endDate}
+      and $P!{idNo}
+group by a.CUST_NAME,a.ID_NO)
+select '1' as GROUP_ID,
+       base2.CUST_NAME,
+       base2.ID_NO,
+       coalesce(base2.CUST_STATUS,' ') as CUST_STATUS,
+       round(cast(coalesce(base2.STOCK_COMMISSION,0) as decimal),2) as STOCK_COMMISSION,
+       round(cast(coalesce(base2.STOCK_AMOUNT,0) as decimal),2) as STOCK_AMOUNT,
+       round(cast(coalesce(base2.STOCK_COMMISSION_RATE,0) as decimal),4) as STOCK_COMMISSION_RATE,
+       round(cast(coalesce(base1.MARGIN_TRADE_BALANCE,0) as decimal),2) as MARGIN_TRADE_BALANCE,
+       round(cast(coalesce(base2.MARGIN_TRADE_INTEREST_EXPENSE,0) as decimal),2) as MARGIN_TRADE_INTEREST_EXPENSE,
+       round(cast(coalesce(base2.COMMON_STOCK_COMMISSION,0) as decimal),2) as COMMON_STOCK_COMMISSION,
+       round(cast(coalesce(base2.OPEN_FUND_COMMISSION,0) as decimal),2) as OPEN_FUND_COMMISSION
+from base2
+left join base1 on base2.ID_NO = base1.ID_NO
+order by base2.ID_NO]]>
+	</queryString>
+	<field name="GROUP_ID" class="java.lang.String"/>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+	</field>
+	<field name="ID_NO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ID_NO"/>
+	</field>
+	<field name="CUST_STATUS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUST_STATUS"/>
+	</field>
+	<field name="STOCK_COMMISSION" class="java.lang.Double"/>
+	<field name="STOCK_AMOUNT" class="java.lang.Double"/>
+	<field name="STOCK_COMMISSION_RATE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_COMMISSION_RATE"/>
+	</field>
+	<field name="MARGIN_TRADE_BALANCE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_TRADE_BALANCE"/>
+	</field>
+	<field name="MARGIN_TRADE_INTEREST_EXPENSE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_TRADE_INTEREST_EXPENSE"/>
+	</field>
+	<field name="COMMON_STOCK_COMMISSION" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="COMMON_STOCK_COMMISSION"/>
+	</field>
+	<field name="OPEN_FUND_COMMISSION" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_FUND_COMMISSION"/>
+	</field>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{ROW_COUNT}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="STOCK_COMMISSION1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{STOCK_COMMISSION}]]></variableExpression>
+	</variable>
+	<variable name="STOCK_AMOUNT1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{STOCK_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="MARGIN_TRADE_BALANCE1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{MARGIN_TRADE_BALANCE}]]></variableExpression>
+	</variable>
+	<variable name="MARGIN_TRADE_INTEREST_EXPENSE1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{MARGIN_TRADE_INTEREST_EXPENSE}]]></variableExpression>
+	</variable>
+	<variable name="COMMON_STOCK_COMMISSION1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{COMMON_STOCK_COMMISSION}]]></variableExpression>
+	</variable>
+	<variable name="OPEN_FUND_COMMISSION1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{OPEN_FUND_COMMISSION}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{GROUP_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField evaluationTime="Group" evaluationGroup="Group1" pattern="#,##0.0000‰">
+					<reportElement style="Report_Title" x="350" y="0" width="100" height="20" printWhenGroupChanges="Group1" uuid="3650045d-8c5a-4ad5-9134-13410db11af3"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+					</box>
+					<textElement>
+						<font fontName="微软雅黑"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{STOCK_COMMISSION1}/$V{STOCK_AMOUNT1}*1000]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group1">
+					<reportElement style="Report_Title" x="450" y="0" width="100" height="20" printWhenGroupChanges="Group1" uuid="c4e9a9ce-767e-42b1-be98-be6a7f0a9d0b">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$V{MARGIN_TRADE_BALANCE1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group1">
+					<reportElement style="Report_Title" x="550" y="0" width="100" height="20" printWhenGroupChanges="Group1" uuid="75f8f390-a184-4097-ab43-286f9bd4a815">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$V{MARGIN_TRADE_INTEREST_EXPENSE1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group1">
+					<reportElement style="Report_Title" x="650" y="0" width="100" height="20" printWhenGroupChanges="Group1" uuid="6b22bee5-1455-433d-8a23-7be20dcc346e">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$V{COMMON_STOCK_COMMISSION1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group1">
+					<reportElement style="Report_Title" x="750" y="0" width="100" height="20" printWhenGroupChanges="Group1" uuid="57b57156-123f-4872-9b86-5f8cff0c5d79">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$V{OPEN_FUND_COMMISSION1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="Report_Title" x="0" y="0" width="350" height="20" uuid="67ba5e67-bae5-4a6d-9b43-ab9da01d27fc"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[合计：]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Title" mode="Opaque" x="0" y="0" width="750" height="20" uuid="d3c0b581-3511-4a9e-90ab-35c5bbeda01b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["关联方证券经纪业务情况表 （"+$P{startDate}.toString()+" - "+$P{endDate}.toString()+" )"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Title" mode="Opaque" x="750" y="0" width="100" height="20" uuid="a76116aa-51f1-425e-a8f3-facbb3a7f275">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="150" y="0" width="100" height="20" uuid="05a672f1-fcdf-4164-9ea2-f89859f3789e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[身份证号/营业执照号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="50" y="0" width="100" height="20" uuid="080211bb-9451-4ebf-a4b3-a1757e473247">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[客户姓名]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="250" y="0" width="100" height="20" uuid="925e64b6-51b5-49bd-82d2-93bc1f3fd449">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[客户状态]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="350" y="0" width="100" height="20" uuid="ade2cbcc-cefd-47fc-83d0-be62760a9801">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票佣金率]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="50" height="20" uuid="55b6ca95-6937-4072-b917-e0f3445daf66">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="450" y="0" width="100" height="20" uuid="aafa6902-9d26-4dea-8e8b-8adefff118f5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[融资融券余额]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="550" y="0" width="100" height="20" uuid="4a6f7d0b-be8c-4fb0-8700-1cd1f791a1bd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[融资融券息费收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="650" y="0" width="100" height="20" uuid="003cc613-6aa8-41c3-b62f-1cd8abdcedea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[普通股票佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="750" y="0" width="100" height="20" uuid="b03c69f9-ffee-42e1-ad0d-216e529cf58f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开放式基金佣金收入]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Detail" x="150" y="0" width="100" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ID_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="50" y="0" width="100" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="250" y="0" width="100" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUST_STATUS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0000‰">
+				<reportElement style="Report_Detail" x="350" y="0" width="100" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_COMMISSION_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="a4cfbb76-df9e-417e-9c62-9fe50b66d04f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="450" y="0" width="100" height="15" uuid="42c9d7a8-0773-4ea2-ab20-0c851c7e5657">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_TRADE_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="550" y="0" width="100" height="15" uuid="c6cff04e-2764-4020-b763-8802c90e5a73">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_TRADE_INTEREST_EXPENSE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="650" y="0" width="100" height="15" uuid="1aa84049-11ef-433f-8574-7f7a8466df83">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMON_STOCK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="750" y="0" width="100" height="15" uuid="71fd3a6c-311b-449a-87c9-2fff9dade094">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_FUND_COMMISSION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

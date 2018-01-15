@@ -1,0 +1,289 @@
+import React,{Component} from 'react'
+import ReactDOM from 'react-dom';
+import {Card} from 'antd';
+import {JfCard} from '../../common';
+import _ from 'underscore';
+const $ =  require('jquery');
+const echarts = require('echarts');
+
+/*
+seriesData:[{name:'',data:[]}]
+yAxisData/xAxisData:[{name:'',data:[]}]
+showLegend:boolean,
+title:'',
+visualMap:boolean,
+visualMapColor:[]
+percentData:[[]] 与seriesData对应
+dataUnit
+rankChangeData 排名变化数据
+axisAppendData 轴附加数据
+tooltipData:[{seriesIndex:number},{name:'',data:[],unit:''}]提示条数据 数据中已存在采取前一种形式，否则采取后一种
+*/
+export default class Bar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            title:this.props.title
+        };
+        let _this = this;
+        let dataUnit = _this.props.dataUnit||[];
+        this.defaultOption = {
+            series:{
+                type:'bar',
+                barMaxWidth:30,
+                barMinHeight:1,
+                barGap:0,
+                label:{
+                    normal:{
+                        show:true,
+                        position:this.props.yAxisData?'right':'top'
+                    }
+                }
+            },
+            grid:{
+                containLabel:true,
+                left:'5%',
+                bottom:'10%'
+            },
+            xAxis:{
+                show:this.props.yAxisData?false:true,
+                axisLine:{
+                    lineStyle:{
+                        color:'#7d919e'
+                    }
+                },
+                axisLabel:{
+                    interval:0,
+                    color:'#9db7c0',
+                    rich:{
+                        normal:{},
+                        up:{
+                            color:'#f00'
+                        },
+                        down:{
+                            color:'#0f0'
+                        }
+                    }
+                },
+                axisTick:{
+                    show:false
+                },
+                splitLine:{
+                    show:false
+                },
+                boundaryGap: ['0', '3%']
+            },
+            yAxis:{
+                //y轴适当向两边延伸
+                nameTextStyle:{
+                    color:'#7d919e',
+                    padding:[0,50,0,0]
+                },
+                axisLine:{
+                    show:false,
+                    lineStyle:{
+                        color:'#65607f'
+                    }
+                },
+
+                axisTick:{
+                    show:false
+                },
+                show:true,
+                axisLabel:{
+                    interval:0,
+                    color:'#9db7c0',
+                    rich:{
+                        normal:{},
+                        up:{
+                            color:'#ff4f4f'
+                        },
+                        down:{
+                            color:'#08ecb1'
+                        }
+                    }
+                },
+                splitLine:{
+                    show:(!this.props.yAxisData),
+                    lineStyle:{
+                        color:'#65607f'
+                    }
+                },
+                inverse:this.props.yAxisData?true:false,
+            },
+            legend:{
+                show:false,
+                orient:'vertical',
+                icon: 'circle',
+               itemWidth: 9,
+               itemHeight: 9,
+                inactiveColor: '#7d7996',
+                textStyle:{
+                    color:'#fff'
+                },
+                right:20,
+                top:20
+            },
+            visualMap:null,
+            tooltip:{
+                show:false,
+                backgroundColor:'transparent',
+                trigger:'axis',
+                axisPointer:{
+                    type:'shadow'
+                },
+                formatter:function(params) {
+                    if(!_this.props.tooltipData){
+                        return params[0].name+'<br />'
+                        +params.map(function(item) {
+                            return item.seriesName+' : '+item.value+(dataUnit[item.seriesIndex]||'');
+                        }).join('<br />');
+                    }
+                    return params[0].name+'<br />'
+                    +_this.props.tooltipData.map(function(item) {
+                        if(item.seriesIndex!==undefined){
+                            let tar = _this.props.seriesData[item.seriesIndex];
+                            return tar.name+' : '+tar.data[params[0].dataIndex]+(dataUnit[item.seriesIndex]||'');
+                        }
+                        return item.name+' : '+item.data[params[0].dataIndex]+(item.unit||'');
+                    }).join('<br />');
+                }
+            },
+            color:['#00d1fa', '#b7a2e7', '#f0ba4e', '#f88db9', '#71d398', '#8d9df2']
+        };
+    }
+    refreshGraph(xAxis,yAxis,series,name){
+        this.chart.setOption({
+            xAxis,
+            yAxis,
+            series
+        });
+        this.setState({title:name+'各项支出趋势图'});
+    }
+    componentDidMount(){
+        let dom = this.refs.chart;
+        this.chart = echarts.init(dom);
+        this.prepareOption();
+        console.log(this.option);
+        this.chart.setOption(this.option);
+    }
+    prepareOption(){
+        let _this = this;
+        let series = [];
+        let visualMap = null;
+        //柱形上的数字
+        this.defaultOption.series.label.normal.formatter = function(params) {
+            let appendString = ''
+            //加上占比数据
+            if(_this.props.percentData){
+                let joinChar = '';
+                // if(_this.props.yAxisData){
+                    joinChar = '，';
+                // }
+                // else {
+                //     joinChar = '\n';
+                // }
+                appendString = joinChar+_this.props.percentData[params.seriesIndex][params.dataIndex];
+            }
+            let value;
+            //横向柱状图中每个数据项有两个值，不显示第二个用于定位y轴的值
+            if($.isArray(params.value)){
+                value = params.value[0];
+            }
+            else {
+                value = params.value;
+            }
+            let unit = _this.props.dataUnit||[];
+            return value+(unit[params.seriesIndex]||'')+appendString;
+        };
+        if(this.props.seriesData.length>1||!this.props.visualMap){
+            series = this.props.seriesData.map(function(item,index) {
+                return $.extend(true,{},_this.defaultOption.series,{
+                    name:item.name,
+                    data:item.data
+                });
+            });
+        }
+        else {
+            series = this.props.seriesData.map(function(item,index) {
+                return $.extend(true,{},_this.defaultOption.series,{
+                    name:item.name,
+                    data:item.data.map(function(dataItem,dataIndex) {
+                        return [dataItem,dataIndex];
+                    })
+                });
+            });
+            let max = Math.max.apply(Math,this.props.seriesData[0].data);
+            let min = Math.min.apply(Math,this.props.seriesData[0].data);
+            if(min===max){
+                max+=1;
+            }
+            visualMap = {
+                max:max,
+                min:min,
+                dimension:0,
+                inRange:{
+                    color:this.props.visualMapColor||['lightskyblue','#3d9bfd'],
+                },
+                show:false,
+                type:'continuous'
+            };
+        }
+        this.option = $.extend(true,{},this.defaultOption,{
+            series,
+            visualMap,
+            xAxis:this.props.xAxisData,
+            yAxis:this.props.yAxisData
+        },this.props.extraOption||{});
+        this.option.legend.data = this.props.seriesData.map(function(item) {
+            return item.name;
+        });
+        if(this.props.rankChangeData){
+            let rankChangeData = this.props.rankChangeData;
+            let formatter = function(value,index) {
+                let rankValue = rankChangeData[index];
+                let style = 'normal';
+                let content = '-';
+                if(rankValue>0){
+                    style = 'up';
+                    content = '↑'+rankValue;
+                }
+                else if (rankValue<0) {
+                    style = 'down';
+                    content = '↓'+(-rankValue);
+                }
+                return value+'({'+style+'|'+content+'})';
+            }
+            if(this.props.yAxisData){
+                this.option.yAxis.axisLabel.formatter = formatter;
+            }
+            else {
+                this.option.xAxis.axisLabel.formatter = formatter;
+            }
+        }
+        //附加数据
+        if(_this.props.axisAppendData){
+            let axisAppendData = _this.props.axisAppendData;
+            let formatter = function(value,index) {
+                let axisAppendString = '-'+axisAppendData.data[index]+axisAppendData.unit;
+                return value+axisAppendString;
+            }
+            if(this.props.yAxisData){
+                this.option.yAxis.axisLabel.formatter = formatter;
+            }
+            else {
+                this.option.xAxis.axisLabel.formatter = formatter;
+            }
+        }
+    }
+    resize(){
+        this.chart.resize();
+    }
+    render(){
+        return (<JfCard title={this.state.title||''}>
+            <div className="markets_exponent_chart">
+                <div ref="chart" style={{width:'100%',height:'100%'}}></div>
+            </div>
+        </JfCard>);
+    }
+}

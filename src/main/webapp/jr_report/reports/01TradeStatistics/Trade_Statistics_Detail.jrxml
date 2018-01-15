@@ -1,0 +1,1954 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="日常业务交易统计原始日报表" pageWidth="4170" pageHeight="280" whenNoDataType="AllSectionsNoDetail" columnWidth="4170" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="99f07307-27d4-499f-b61b-894610fa2d7a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CT_Kylin"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="net.sf.jasperreports.export.html.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.html.id" value="JF_Report_01"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.column" value="C"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="3"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="343"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="647"/>
+	<style name="Report_Title" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#29203D"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+		</box>
+	</style>
+	<style name="Report_Header" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#35304D"/>
+		</box>
+	</style>
+	<style name="Report_Detail" mode="Opaque" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="9">
+		<box>
+			<pen lineWidth="1.0" lineColor="#46425B"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+		</box>
+	</style>
+	<parameter name="startDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA["20171101"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA["20171109"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="branchNo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["BEANCH_CODE in ('101','102','103')"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="indexId" class="java.lang.String">
+		<defaultValueExpression><![CDATA["001,002,003,004"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="exportType" class="java.lang.String"/>
+	<parameter name="yearId" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[with
+period_main as (
+select  BRANCH_CODE,
+        sum(STOCK_AMOUNT) as STOCK_AMOUNT,
+        sum(FUND_AMOUNT) as FUND_AMOUNT,
+        sum(WARRANT_AMOUNT) as WARRANT_AMOUNT,
+        sum(SFW_AMOUNT) as SFW_AMOUNT,
+        (case when sum(SFW_AMOUNT) = 0 or sum(SFW_AMOUNT) is null then 0.00
+             when sum(SFW_MARKET_AMOUNT) = 0 or sum(SFW_MARKET_AMOUNT) is null then 9999999999.00
+        else sum(SFW_AMOUNT)/sum(SFW_MARKET_AMOUNT)*100 end) as SFW_MARKET_RATE,
+        sum(SF_AMOUNT) as SF_AMOUNT,
+        (case when sum(SF_AMOUNT) = 0 or sum(SF_AMOUNT) is null then 0.00
+             when sum(SF_MARKET_AMOUNT) = 0 or sum(SF_MARKET_AMOUNT) is null then 9999999999.00
+        else sum(SF_AMOUNT)/sum(SF_MARKET_AMOUNT)*100 end) as SF_MARKET_RATE,
+        sum(COMMISSION) as COMMISSION,
+        (case when sum(STOCK_COMMISSION) = 0 or sum(STOCK_COMMISSION) is null then 0.00
+             when sum(STOCK_AMOUNT) = 0 or sum(STOCK_AMOUNT) is null then 9999999999.00
+        else sum(STOCK_COMMISSION)/sum(STOCK_AMOUNT)*1000 end) as STOCK_RATE,
+        sum(OPEN_CUST_NUM) as OPEN_CUST_NUM,
+        avg(FUND_BALANCE) as FUND_BALANCE_AVG,
+        avg(STOCK_BALANCE) as STOCK_BALANCE_AVG,
+        avg(ASSET_BALANCE) as ASSET_BALANCE_AVG,
+        sum(B_STOCK_AMOUNT) as B_STOCK_AMOUNT,
+        (case when sum(SF_COMMISSION) = 0 or sum(SF_COMMISSION) is null then 0.00
+             when sum(SF_AMOUNT) = 0 or sum(SF_AMOUNT) is null then 9999999999.00
+        else sum(SF_COMMISSION)/sum(SF_AMOUNT)*1000 end) as SF_RATE,
+        sum(NET_COMMISSION) as NET_COMMISSION,
+        sum(CREDIT_AMOUNT) as CREDIT_AMOUNT,
+        sum(CREDIT_COMMISSION) as CREDIT_COMMISSION,
+        sum(CREDIT_NET_COMMISSION) as CREDIT_NET_COMMISSION,
+        sum(ASSURE_AMOUNT) as ASSURE_AMOUNT,
+        sum(ASSURE_COMMISSION) as ASSURE_COMMISSION,
+        sum(ASSURE_NET_COMMISSION) as ASSURE_NET_COMMISSION,
+        (case when sum(SFW_AMOUNT_ALL) = 0 or sum(SFW_AMOUNT_ALL) is null then 0.00
+             when sum(SFW_MARKET_AMOUNT_ALL) = 0 or sum(SFW_MARKET_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SFW_AMOUNT_ALL)/sum(SFW_MARKET_AMOUNT_ALL)*100 end) as SFW_MARKET_AMOUNT_ALL_RATE,
+        (case when sum(SF_AMOUNT_ALL) = 0 or sum(SF_AMOUNT_ALL) is null then 0.00
+             when sum(SF_MARKET_AMOUNT_ALL) = 0 or sum(SF_MARKET_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SF_AMOUNT_ALL)/sum(SF_MARKET_AMOUNT_ALL)*100 end) as SF_MARKET_AMOUNT_ALL_RATE,
+        (case when sum(STOCK_COMMISSION_ALL) = 0 or sum(STOCK_COMMISSION_ALL) is null then 0.00
+             when sum(STOCK_AMOUNT_ALL) = 0 or sum(STOCK_AMOUNT_ALL) is null then 9999999999.00
+        else sum(STOCK_COMMISSION_ALL)/sum(STOCK_AMOUNT_ALL)*1000 end) as STOCK_AMOUNT_ALL_RATE,
+        (case when sum(SF_COMMISSION_ALL) = 0 or sum(SF_COMMISSION_ALL) is null then 0.00
+             when sum(SF_AMOUNT_ALL) = 0 or sum(SF_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SF_COMMISSION_ALL)/sum(SF_AMOUNT_ALL)*1000 end) as SF_AMOUNT_ALL_RATE,
+        avg(DEBIT_BALANCE) as DEBIT_BALANCE_AVG,
+        avg(ASSURE_BALANCE) as ASSURE_BALANCE_AVG,
+        sum(MARGIN_OPEN_CUST_NUM) as MARGIN_OPEN_CUST_NUM,
+        sum(SFW_AMOUNT_ALL) as SFW_AMOUNT_ALL,
+        sum(COMMISSION_ALL) as COMMISSION_ALL,
+        sum(NET_COMMISSION_ALL) as NET_COMMISSION_ALL,
+        sum(HK_STOCK_AMOUNT) as HK_STOCK_AMOUNT,
+        sum(HK_COMMISSION) as HK_COMMISSION,
+        avg(MULTI_FINANCIAL_AMOUNT) as MULTI_FINANCIAL_AMOUNT_AVG
+from REPORT.TRADE_STATISTICS_DETAIL
+where INIT_DATE between $P!{startDate} and $P!{endDate} and $P!{branchNo}
+group by BRANCH_CODE),
+year_main as (
+select  BRANCH_CODE,
+        sum(STOCK_AMOUNT) as STOCK_AMOUNT_Y,
+        sum(FUND_AMOUNT) as FUND_AMOUNT_Y,
+        sum(WARRANT_AMOUNT) as WARRANT_AMOUNT_Y,
+        sum(SFW_AMOUNT) as SFW_AMOUNT_Y,
+        (case when sum(SFW_AMOUNT) = 0 or sum(SFW_AMOUNT) is null then 0.00
+             when sum(SFW_MARKET_AMOUNT) = 0 or sum(SFW_MARKET_AMOUNT) is null then 9999999999.00
+        else sum(SFW_AMOUNT)/sum(SFW_MARKET_AMOUNT)*100 end) as SFW_MARKET_RATE_Y,
+        sum(SF_AMOUNT) as SF_AMOUNT_Y,
+        (case when sum(SF_AMOUNT) = 0 or sum(SF_AMOUNT) is null then 0.00
+             when sum(SF_MARKET_AMOUNT) = 0 or sum(SF_MARKET_AMOUNT) is null then 9999999999.00
+        else sum(SF_AMOUNT)/sum(SF_MARKET_AMOUNT)*100 end) as SF_MARKET_RATE_Y,
+        sum(COMMISSION) as COMMISSION_Y,
+        (case when sum(STOCK_COMMISSION) = 0 or sum(STOCK_COMMISSION) is null then 0.00
+             when sum(STOCK_AMOUNT) = 0 or sum(STOCK_AMOUNT) is null then 9999999999.00
+        else sum(STOCK_COMMISSION)/sum(STOCK_AMOUNT)*1000 end) as STOCK_RATE_Y,
+        sum(OPEN_CUST_NUM) as OPEN_CUST_NUM_Y,
+        avg(FUND_BALANCE) as FUND_BALANCE_AVG_Y,
+        avg(STOCK_BALANCE) as STOCK_BALANCE_AVG_Y,
+        avg(ASSET_BALANCE) as ASSET_BALANCE_AVG_Y,
+        sum(B_STOCK_AMOUNT) as B_STOCK_AMOUNT_Y,
+        (case when sum(SF_COMMISSION) = 0 or sum(SF_COMMISSION) is null then 0.00
+             when sum(SF_AMOUNT) = 0 or sum(SF_AMOUNT) is null then 9999999999.00
+        else sum(SF_COMMISSION)/sum(SF_AMOUNT)*1000 end) as SF_RATE_Y,
+        sum(NET_COMMISSION) as NET_COMMISSION_Y,
+        sum(CREDIT_AMOUNT) as CREDIT_AMOUNT_Y,
+        sum(CREDIT_COMMISSION) as CREDIT_COMMISSION_Y,
+        sum(CREDIT_NET_COMMISSION) as CREDIT_NET_COMMISSION_Y,
+        sum(ASSURE_AMOUNT) as ASSURE_AMOUNT_Y,
+        sum(ASSURE_COMMISSION) as ASSURE_COMMISSION_Y,
+        sum(ASSURE_NET_COMMISSION) as ASSURE_NET_COMMISSION_Y,
+        (case when sum(SFW_AMOUNT_ALL) = 0 or sum(SFW_AMOUNT_ALL) is null then 0.00
+             when sum(SFW_MARKET_AMOUNT_ALL) = 0 or sum(SFW_MARKET_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SFW_AMOUNT_ALL)/sum(SFW_MARKET_AMOUNT_ALL)*100 end) as SFW_MARKET_AMOUNT_ALL_RATE_Y,
+        (case when sum(SF_AMOUNT_ALL) = 0 or sum(SF_AMOUNT_ALL) is null then 0.00
+             when sum(SF_MARKET_AMOUNT_ALL) = 0 or sum(SF_MARKET_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SF_AMOUNT_ALL)/sum(SF_MARKET_AMOUNT_ALL)*100 end) as SF_MARKET_AMOUNT_ALL_RATE_Y,
+        (case when sum(STOCK_COMMISSION_ALL) = 0 or sum(STOCK_COMMISSION_ALL) is null then 0.00
+             when sum(STOCK_AMOUNT_ALL) = 0 or sum(STOCK_AMOUNT_ALL) is null then 9999999999.00
+        else sum(STOCK_COMMISSION_ALL)/sum(STOCK_AMOUNT_ALL)*1000 end) as STOCK_AMOUNT_ALL_RATE_Y,
+        (case when sum(SF_COMMISSION_ALL) = 0 or sum(SF_COMMISSION_ALL) is null then 0.00
+             when sum(SF_AMOUNT_ALL) = 0 or sum(SF_AMOUNT_ALL) is null then 9999999999.00
+        else sum(SF_COMMISSION_ALL)/sum(SF_AMOUNT_ALL)*1000 end) as SF_AMOUNT_ALL_RATE_Y,
+        avg(DEBIT_BALANCE) as DEBIT_BALANCE_AVG_Y,
+        avg(ASSURE_BALANCE) as ASSURE_BALANCE_AVG_Y,
+        sum(SFW_AMOUNT_ALL) as SFW_AMOUNT_ALL_Y,
+        sum(COMMISSION_ALL) as COMMISSION_ALL_Y,
+        sum(NET_COMMISSION_ALL) as NET_COMMISSION_ALL_Y,
+        sum(HK_STOCK_AMOUNT) as HK_STOCK_AMOUNT_Y,
+        sum(HK_COMMISSION) as HK_COMMISSION_Y,
+        sum(HK_OPEN_CUST_NUM) as HK_OPEN_CUST_NUM_Y
+from REPORT.TRADE_STATISTICS_DETAIL a
+where a.init_date between ($P!{endDate}/10000*10000+101) and $P!{endDate} and $P!{branchNo}
+group by BRANCH_CODE),
+period_close as (
+select  BRANCH_CODE,
+        FUND_BALANCE as FUND_BALANCE_CLOSE_P,
+        STOCK_BALANCE as STOCK_BALANCE_CLOSE_P,
+        ASSET_BALANCE as ASSET_BALANCE_CLOSE_P,
+        ASSURE_BALANCE as ASSURE_BALANCE_CLOSE_P,
+        DEBIT_BALANCE  as DEBIT_BALANCE_CLOSE_P
+from REPORT.TRADE_STATISTICS_DETAIL
+where INIT_DATE = $P!{endDate} and $P!{branchNo}),
+year_close as (
+select  BRANCH_CODE,
+        FUND_BALANCE as FUND_BALANCE_CLOSE_Y,
+        STOCK_BALANCE as STOCK_BALANCE_CLOSE_Y,
+        ASSET_BALANCE as ASSET_BALANCE_CLOSE_Y,
+        ASSURE_BALANCE as ASSURE_BALANCE_CLOSE_Y,
+        DEBIT_BALANCE  as DEBIT_BALANCE_CLOSE_Y
+from REPORT.TRADE_STATISTICS_DETAIL
+where INIT_DATE = $P!{endDate}),
+total_cust as (
+select BRANCH_CODE,
+       sum(OPEN_CUST_NUM) as OPEN_CUST_NUM_TOTAL
+from REPORT.TRADE_STATISTICS_DETAIL
+where $P!{branchNo}
+group by BRANCH_CODE)
+select  a.NAME as BRANCH_NAME,
+        round(cast(coalesce(STOCK_AMOUNT,0)/10000 as decimal),2) as STOCK_AMOUNT,
+        round(cast(coalesce(FUND_AMOUNT,0)/10000 as decimal),2) as FUND_AMOUNT,
+        round(cast(coalesce(WARRANT_AMOUNT,0)/10000 as decimal),2) as WARRANT_AMOUNT,
+        round(cast(coalesce(SFW_AMOUNT,0)/10000 as decimal),2) as SFW_AMOUNT,
+        round(cast(coalesce(SFW_MARKET_RATE,0) as decimal),2) as SFW_MARKET_RATE,
+        round(cast(coalesce(SF_AMOUNT,0)/10000 as decimal),2) as SF_AMOUNT,
+        round(cast(coalesce(SF_MARKET_RATE,0) as decimal),2) as SF_MARKET_RATE,
+        round(cast(coalesce(COMMISSION,0)/10000 as decimal),2) as COMMISSION,
+        round(cast(coalesce(STOCK_RATE,0) as decimal),4) as STOCK_RATE,
+        coalesce(OPEN_CUST_NUM,0) as OPEN_CUST_NUM,
+        round(cast(coalesce(FUND_BALANCE_AVG,0)/10000 as decimal),2) as FUND_BALANCE_AVG,
+        round(cast(coalesce(STOCK_BALANCE_AVG,0)/10000 as decimal),2) as STOCK_BALANCE_AVG,
+        round(cast(coalesce(ASSET_BALANCE_AVG,0)/10000 as decimal),2) as ASSET_BALANCE_AVG,
+        round(cast(coalesce(FUND_BALANCE_CLOSE_P,0)/10000 as decimal),2) as FUND_BALANCE_CLOSE_P,
+        round(cast(coalesce(STOCK_BALANCE_CLOSE_P,0)/10000 as decimal),2) as STOCK_BALANCE_CLOSE_P,
+        round(cast(coalesce(ASSET_BALANCE_CLOSE_P,0)/10000 as decimal),2) as ASSET_BALANCE_CLOSE_P,
+        round(cast(coalesce(STOCK_AMOUNT_Y,0)/10000 as decimal),2) as STOCK_AMOUNT_Y,
+        round(cast(coalesce(FUND_AMOUNT_Y,0)/10000 as decimal),2) as FUND_AMOUNT_Y,
+        round(cast(coalesce(WARRANT_AMOUNT_Y,0)/10000 as decimal),2) as WARRANT_AMOUNT_Y,
+        round(cast(coalesce(SFW_AMOUNT_Y,0)/10000 as decimal),2) as SFW_AMOUNT_Y,
+        round(cast(coalesce(SFW_MARKET_RATE_Y,0) as decimal),2) as SFW_MARKET_RATE_Y,
+        round(cast(coalesce(SF_AMOUNT_Y,0)/10000 as decimal),2) as SF_AMOUNT_Y,
+        round(cast(coalesce(SF_MARKET_RATE_Y,0) as decimal),2) as SF_MARKET_RATE_Y,
+        round(cast(coalesce(COMMISSION_Y,0)/10000 as decimal),2) as COMMISSION_Y,
+        round(cast(coalesce(STOCK_RATE_Y,0) as decimal),4) as STOCK_RATE_Y,
+        coalesce(OPEN_CUST_NUM_Y,0) as OPEN_CUST_NUM_Y,
+        round(cast(coalesce(FUND_BALANCE_AVG_Y,0)/10000 as decimal),2) as FUND_BALANCE_AVG_Y,
+        round(cast(coalesce(STOCK_BALANCE_AVG_Y,0)/10000 as decimal),2) as STOCK_BALANCE_AVG_Y,
+        round(cast(coalesce(ASSET_BALANCE_AVG_Y,0)/10000 as decimal),2) as ASSET_BALANCE_AVG_Y,
+        round(cast(coalesce(FUND_BALANCE_CLOSE_Y,0)/10000 as decimal),2) as FUND_BALANCE_CLOSE_Y,
+        round(cast(coalesce(STOCK_BALANCE_CLOSE_Y,0)/10000 as decimal),2) as STOCK_BALANCE_CLOSE_Y,
+        round(cast(coalesce(ASSET_BALANCE_CLOSE_Y,0)/10000 as decimal),2) as ASSET_BALANCE_CLOSE_Y,
+        coalesce(OPEN_CUST_NUM_TOTAL,0) as OPEN_CUST_NUM_TOTAL,
+        round(cast(coalesce(B_STOCK_AMOUNT,0)/10000 as decimal),2) as B_STOCK_AMOUNT,
+        round(cast(coalesce(B_STOCK_AMOUNT_Y,0)/10000 as decimal),2) as B_STOCK_AMOUNT_Y,
+        round(cast(coalesce(SF_RATE,0) as decimal),4) as SF_RATE,
+        round(cast(coalesce(SF_RATE_Y,0) as decimal),4) as SF_RATE_Y,
+        round(cast(coalesce(NET_COMMISSION_Y,0)/10000 as decimal),2) as NET_COMMISSION_Y,
+        round(cast(coalesce(NET_COMMISSION,0)/10000 as decimal),2) as NET_COMMISSION,
+        round(cast(coalesce(CREDIT_AMOUNT,0)/10000 as decimal),2) as CREDIT_AMOUNT,
+        round(cast(coalesce(CREDIT_COMMISSION,0)/10000 as decimal),2) as CREDIT_COMMISSION,
+        round(cast(coalesce(CREDIT_NET_COMMISSION,0)/10000 as decimal),2) as CREDIT_NET_COMMISSION,
+        round(cast(coalesce(ASSURE_AMOUNT,0)/10000 as decimal),2) as ASSURE_AMOUNT,
+        round(cast(coalesce(ASSURE_COMMISSION,0)/10000 as decimal),2) as ASSURE_COMMISSION,
+        round(cast(coalesce(ASSURE_NET_COMMISSION,0)/10000 as decimal),2) as ASSURE_NET_COMMISSION,
+        round(cast(coalesce(ASSURE_BALANCE_CLOSE_P,0)/10000 as decimal),2) as ASSURE_BALANCE_CLOSE_P,
+        round(cast(coalesce(DEBIT_BALANCE_CLOSE_P,0)/10000 as decimal),2) as DEBIT_BALANCE_CLOSE_P,
+        round(cast(coalesce(CREDIT_AMOUNT_Y,0)/10000 as decimal),2) as CREDIT_AMOUNT_Y,
+        round(cast(coalesce(CREDIT_COMMISSION_Y,0)/10000 as decimal),2) as CREDIT_COMMISSION_Y,
+        round(cast(coalesce(CREDIT_NET_COMMISSION_Y,0)/10000 as decimal),2) as CREDIT_NET_COMMISSION_Y,
+        round(cast(coalesce(ASSURE_AMOUNT_Y,0)/10000 as decimal),2) as ASSURE_AMOUNT_Y,
+        round(cast(coalesce(ASSURE_COMMISSION_Y,0)/10000 as decimal),2) as ASSURE_COMMISSION_Y,
+        round(cast(coalesce(ASSURE_NET_COMMISSION_Y,0)/10000 as decimal),2) as ASSURE_NET_COMMISSION_Y,
+        round(cast(coalesce(ASSURE_BALANCE_CLOSE_Y,0)/10000 as decimal),2) as ASSURE_BALANCE_CLOSE_Y,
+        round(cast(coalesce(DEBIT_BALANCE_CLOSE_Y,0)/10000 as decimal),2) as DEBIT_BALANCE_CLOSE_Y,
+        round(cast(coalesce(SFW_MARKET_AMOUNT_ALL_RATE,0) as decimal),4) as SFW_MARKET_AMOUNT_ALL_RATE,
+        round(cast(coalesce(SF_MARKET_AMOUNT_ALL_RATE,0) as decimal),4) as SF_MARKET_AMOUNT_ALL_RATE,
+        round(cast(coalesce(SFW_MARKET_AMOUNT_ALL_RATE_Y,0) as decimal),4) as SFW_MARKET_AMOUNT_ALL_RATE_Y,
+        round(cast(coalesce(SF_MARKET_AMOUNT_ALL_RATE_Y,0) as decimal),4) as SF_MARKET_AMOUNT_ALL_RATE_Y,
+        round(cast(coalesce(STOCK_AMOUNT_ALL_RATE,0) as decimal),4) as STOCK_AMOUNT_ALL_RATE,
+        round(cast(coalesce(STOCK_AMOUNT_ALL_RATE_Y,0) as decimal),4) as STOCK_AMOUNT_ALL_RATE_Y,
+        round(cast(coalesce(SF_AMOUNT_ALL_RATE,0) as decimal),4) as SF_AMOUNT_ALL_RATE,
+        round(cast(coalesce(SF_AMOUNT_ALL_RATE_Y,0) as decimal),4) as SF_AMOUNT_ALL_RATE_Y,
+        round(cast(coalesce(DEBIT_BALANCE_AVG,0)/10000 as decimal),2) as DEBIT_BALANCE_AVG,
+        round(cast(coalesce(ASSURE_BALANCE_AVG,0)/10000 as decimal),2) as ASSURE_BALANCE_AVG,
+        round(cast(coalesce(DEBIT_BALANCE_AVG_Y,0)/10000 as decimal),2) as DEBIT_BALANCE_AVG_Y,
+        round(cast(coalesce(ASSURE_BALANCE_AVG_Y,0)/10000 as decimal),2) as ASSURE_BALANCE_AVG_Y,
+        coalesce(MARGIN_OPEN_CUST_NUM,0) as MARGIN_OPEN_CUST_NUM,
+        round(cast(coalesce(SFW_AMOUNT_ALL,0)/10000 as decimal),2) as SFW_AMOUNT_ALL,
+        round(cast(coalesce(COMMISSION_ALL,0)/10000 as decimal),2) as COMMISSION_ALL,
+        round(cast(coalesce(NET_COMMISSION_ALL,0)/10000 as decimal),2) as NET_COMMISSION_ALL,
+        round(cast(coalesce(SFW_AMOUNT_ALL_Y,0)/10000 as decimal),2) as SFW_AMOUNT_ALL_Y,
+        round(cast(coalesce(COMMISSION_ALL_Y,0)/10000 as decimal),2) as COMMISSION_ALL_Y,
+        round(cast(coalesce(NET_COMMISSION_ALL_Y,0)/10000 as decimal),2) as NET_COMMISSION_ALL_Y,
+        round(cast(coalesce(HK_STOCK_AMOUNT,0)/10000 as decimal),2) as HK_STOCK_AMOUNT,
+        round(cast(coalesce(HK_COMMISSION,0)/10000 as decimal),2) as HK_COMMISSION,
+        round(cast(coalesce(HK_STOCK_AMOUNT_Y,0)/10000 as decimal),2) as HK_STOCK_AMOUNT_Y,
+        round(cast(coalesce(HK_COMMISSION_Y,0)/10000 as decimal),2) as HK_COMMISSION_Y,
+        coalesce(HK_OPEN_CUST_NUM_Y,0) as HK_OPEN_CUST_NUM_Y,
+        round(cast(coalesce(MULTI_FINANCIAL_AMOUNT_AVG,0)/10000 as decimal),2) as MULTI_FINANCIAL_AMOUNT_AVG
+from year_main
+left join period_main on year_main.BRANCH_CODE=period_main.BRANCH_CODE
+left join period_close on year_main.BRANCH_CODE=period_close.BRANCH_CODE
+left join year_close on year_main.BRANCH_CODE=year_close.BRANCH_CODE
+left join total_cust on year_main.BRANCH_CODE=total_cust.BRANCH_CODE
+left join UF20_EDW.DIM_BRANCH a on year_main.BRANCH_CODE=a.ID
+order by year_main.BRANCH_CODE]]>
+	</queryString>
+	<field name="BRANCH_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BRANCH_NAME"/>
+	</field>
+	<field name="STOCK_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_AMOUNT"/>
+	</field>
+	<field name="FUND_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_AMOUNT"/>
+	</field>
+	<field name="WARRANT_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="WARRANT_AMOUNT"/>
+	</field>
+	<field name="SFW_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_AMOUNT"/>
+	</field>
+	<field name="SFW_MARKET_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_MARKET_RATE"/>
+	</field>
+	<field name="SF_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_AMOUNT"/>
+	</field>
+	<field name="SF_MARKET_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_MARKET_RATE"/>
+	</field>
+	<field name="COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COMMISSION"/>
+	</field>
+	<field name="STOCK_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_RATE"/>
+	</field>
+	<field name="OPEN_CUST_NUM" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_CUST_NUM"/>
+	</field>
+	<field name="FUND_BALANCE_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_BALANCE_AVG"/>
+	</field>
+	<field name="STOCK_BALANCE_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_BALANCE_AVG"/>
+	</field>
+	<field name="ASSET_BALANCE_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_BALANCE_AVG"/>
+	</field>
+	<field name="FUND_BALANCE_CLOSE_P" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_BALANCE_CLOSE_P"/>
+	</field>
+	<field name="STOCK_BALANCE_CLOSE_P" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_BALANCE_CLOSE_P"/>
+	</field>
+	<field name="ASSET_BALANCE_CLOSE_P" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_BALANCE_CLOSE_P"/>
+	</field>
+	<field name="STOCK_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_AMOUNT_Y"/>
+	</field>
+	<field name="FUND_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_AMOUNT_Y"/>
+	</field>
+	<field name="WARRANT_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="WARRANT_AMOUNT_Y"/>
+	</field>
+	<field name="SFW_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_AMOUNT_Y"/>
+	</field>
+	<field name="SFW_MARKET_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_MARKET_RATE_Y"/>
+	</field>
+	<field name="SF_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_AMOUNT_Y"/>
+	</field>
+	<field name="SF_MARKET_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_MARKET_RATE_Y"/>
+	</field>
+	<field name="COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COMMISSION_Y"/>
+	</field>
+	<field name="STOCK_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_RATE_Y"/>
+	</field>
+	<field name="OPEN_CUST_NUM_Y" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_CUST_NUM_Y"/>
+	</field>
+	<field name="FUND_BALANCE_AVG_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_BALANCE_AVG_Y"/>
+	</field>
+	<field name="STOCK_BALANCE_AVG_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_BALANCE_AVG_Y"/>
+	</field>
+	<field name="ASSET_BALANCE_AVG_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_BALANCE_AVG_Y"/>
+	</field>
+	<field name="FUND_BALANCE_CLOSE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_BALANCE_CLOSE_Y"/>
+	</field>
+	<field name="STOCK_BALANCE_CLOSE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_BALANCE_CLOSE_Y"/>
+	</field>
+	<field name="ASSET_BALANCE_CLOSE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_BALANCE_CLOSE_Y"/>
+	</field>
+	<field name="OPEN_CUST_NUM_TOTAL" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_CUST_NUM_TOTAL"/>
+	</field>
+	<field name="B_STOCK_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="B_STOCK_AMOUNT"/>
+	</field>
+	<field name="B_STOCK_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="B_STOCK_AMOUNT_Y"/>
+	</field>
+	<field name="SF_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_RATE"/>
+	</field>
+	<field name="SF_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_RATE_Y"/>
+	</field>
+	<field name="NET_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="NET_COMMISSION_Y"/>
+	</field>
+	<field name="NET_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="NET_COMMISSION"/>
+	</field>
+	<field name="CREDIT_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_AMOUNT"/>
+	</field>
+	<field name="CREDIT_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_COMMISSION"/>
+	</field>
+	<field name="CREDIT_NET_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_NET_COMMISSION"/>
+	</field>
+	<field name="ASSURE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_AMOUNT"/>
+	</field>
+	<field name="ASSURE_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_COMMISSION"/>
+	</field>
+	<field name="ASSURE_NET_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_NET_COMMISSION"/>
+	</field>
+	<field name="ASSURE_BALANCE_CLOSE_P" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_BALANCE_CLOSE_P"/>
+	</field>
+	<field name="DEBIT_BALANCE_CLOSE_P" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="DEBIT_BALANCE_CLOSE_P"/>
+	</field>
+	<field name="CREDIT_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_AMOUNT_Y"/>
+	</field>
+	<field name="CREDIT_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_COMMISSION_Y"/>
+	</field>
+	<field name="CREDIT_NET_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CREDIT_NET_COMMISSION_Y"/>
+	</field>
+	<field name="ASSURE_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_AMOUNT_Y"/>
+	</field>
+	<field name="ASSURE_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_COMMISSION_Y"/>
+	</field>
+	<field name="ASSURE_NET_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_NET_COMMISSION_Y"/>
+	</field>
+	<field name="ASSURE_BALANCE_CLOSE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_BALANCE_CLOSE_Y"/>
+	</field>
+	<field name="DEBIT_BALANCE_CLOSE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="DEBIT_BALANCE_CLOSE_Y"/>
+	</field>
+	<field name="SFW_MARKET_AMOUNT_ALL_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_MARKET_AMOUNT_ALL_RATE"/>
+	</field>
+	<field name="SF_MARKET_AMOUNT_ALL_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_MARKET_AMOUNT_ALL_RATE"/>
+	</field>
+	<field name="SFW_MARKET_AMOUNT_ALL_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_MARKET_AMOUNT_ALL_RATE_Y"/>
+	</field>
+	<field name="SF_MARKET_AMOUNT_ALL_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_MARKET_AMOUNT_ALL_RATE_Y"/>
+	</field>
+	<field name="STOCK_AMOUNT_ALL_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_AMOUNT_ALL_RATE"/>
+	</field>
+	<field name="STOCK_AMOUNT_ALL_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_AMOUNT_ALL_RATE_Y"/>
+	</field>
+	<field name="SF_AMOUNT_ALL_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_AMOUNT_ALL_RATE"/>
+	</field>
+	<field name="SF_AMOUNT_ALL_RATE_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SF_AMOUNT_ALL_RATE_Y"/>
+	</field>
+	<field name="DEBIT_BALANCE_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="DEBIT_BALANCE_AVG"/>
+	</field>
+	<field name="ASSURE_BALANCE_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_BALANCE_AVG"/>
+	</field>
+	<field name="DEBIT_BALANCE_AVG_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="DEBIT_BALANCE_AVG_Y"/>
+	</field>
+	<field name="ASSURE_BALANCE_AVG_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSURE_BALANCE_AVG_Y"/>
+	</field>
+	<field name="MARGIN_OPEN_CUST_NUM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_OPEN_CUST_NUM"/>
+	</field>
+	<field name="SFW_AMOUNT_ALL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_AMOUNT_ALL"/>
+	</field>
+	<field name="COMMISSION_ALL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COMMISSION_ALL"/>
+	</field>
+	<field name="NET_COMMISSION_ALL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="NET_COMMISSION_ALL"/>
+	</field>
+	<field name="SFW_AMOUNT_ALL_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="SFW_AMOUNT_ALL_Y"/>
+	</field>
+	<field name="COMMISSION_ALL_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COMMISSION_ALL_Y"/>
+	</field>
+	<field name="NET_COMMISSION_ALL_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="NET_COMMISSION_ALL_Y"/>
+	</field>
+	<field name="HK_STOCK_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="HK_STOCK_AMOUNT"/>
+	</field>
+	<field name="HK_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="HK_COMMISSION"/>
+	</field>
+	<field name="HK_STOCK_AMOUNT_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="HK_STOCK_AMOUNT_Y"/>
+	</field>
+	<field name="HK_COMMISSION_Y" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="HK_COMMISSION_Y"/>
+	</field>
+	<field name="HK_OPEN_CUST_NUM_Y" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="HK_OPEN_CUST_NUM_Y"/>
+	</field>
+	<field name="MULTI_FINANCIAL_AMOUNT_AVG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MULTI_FINANCIAL_AMOUNT_AVG"/>
+	</field>
+	<sortField name="STOCK_AMOUNT"/>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{ROW_COUNT}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Report_Title" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="170" height="20" isPrintWhenDetailOverflows="true" uuid="9cbc0acb-9594-4fbf-94c5-31fb9fd6053a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.export.html.class" value="ant-table-scroll"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["财通证券日常交易统计原始日报 （"+$P{startDate}.toString()+" - "+$P{endDate}.toString()+" )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="0" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="05a672f1-fcdf-4164-9ea2-f89859f3789e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="50" y="0" width="120" height="40" isPrintWhenDetailOverflows="true" uuid="080211bb-9451-4ebf-a4b3-a1757e473247">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[分支机构名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="170" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="86e69d33-3ea2-4bcf-ab52-9a9ca08cd068">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "002" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股票交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="220" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="925e64b6-51b5-49bd-82d2-93bc1f3fd449">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "003" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_基金交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="270" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="ade2cbcc-cefd-47fc-83d0-be62760a9801">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "004" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_权证交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="320" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="2aafabab-171b-4ef2-8375-7eaa04e8d265">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "005" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基权交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="370" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="d5022895-790c-45ac-9c72-1628197257fd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "006" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基权市场占比(%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="420" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="a8973dda-6163-4f2f-8693-bfa849cc859f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "007" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="470" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="33fa1ac7-5c35-4776-a101-857a2ec2b9d5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "008" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基市场占比(%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="520" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="73c8bb94-81f8-44f3-be36-c9a338284f6e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "009" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_佣金(万元)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="570" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="64f52be0-bbe5-4a31-bee7-1fb081c74ba2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "010" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股票费率(‰)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="620" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="e3f4b81b-6219-4133-b138-e30ae7ce7031">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "011" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_开户数]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="670" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="6803b556-fc92-46e4-a901-c58245fe1ed5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "012" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均资金余额(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="720" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "013" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均股票市值(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="770" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "014" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="820" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "015" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_期末资金余额(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="870" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "016" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_期末股票市值(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="920" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "017" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_期末资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="970" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "018" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股票交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1020" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "019" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_基金交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1070" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "020" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_权证交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1120" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "021" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基权交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1170" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "022" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基权市场占比%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1220" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "023" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1270" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "024" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基市场占比%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1320" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "025" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1370" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "026" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股票费率‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1420" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "027" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_开户数]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1470" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "028" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_日均资金余额(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1520" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "029" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_日均股票市值(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1570" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "030" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_日均资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1620" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "031" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_期末资金余额(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1670" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "032" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_期末股票市值(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1720" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "033" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_期末资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1770" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "034" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[总开户数]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1820" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "035" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_B股交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1870" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "036" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_B股交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1920" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "037" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基费率‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1970" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "038" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基费率‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2020" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "039" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2070" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "040" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2120" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "041" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_信用交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2170" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "042" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_信用交易佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2220" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "043" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_信用交易净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2270" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "044" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_担保品交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2320" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "045" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_担保品佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2370" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "046" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_担保品净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2420" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "047" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期期末_担保品资产（万）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2470" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "048" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期期末_负债资产（万）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2520" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "049" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_信用交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2570" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "050" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_信用交易佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2620" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "051" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_信用交易净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2670" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "052" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_担保品交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2720" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "053" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_担保品佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2770" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "054" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_担保品净佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2820" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "055" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年期末_担保品资产（万）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2870" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "056" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年期末_负债资产（万）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2920" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "057" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基权市场占比(含融资融券)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="2970" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "058" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基市场占比(含融资融券)%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3020" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "059" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基权市场占比(含融资融券)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3070" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "060" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基市场占比(含融资融券)%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3120" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "061" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股票费率(含融资融券)‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3170" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "062" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股票费率(含融资融券)‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3220" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "063" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_股基费率(含融资融券)‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3270" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "064" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_股基费率(含融资融券)‰]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3320" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "065" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均负债(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3370" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "066" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均担保品资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3420" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "067" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_日均负债(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3470" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "068" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_日均担保品资产(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3520" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "069" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_融资融券客户开户数]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3570" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "070" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_总股基权交易量(含融资融券)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3620" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "071" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_总佣金(含融资融券)(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3670" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "072" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_总净佣金(含融资融券)(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3720" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "073" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_总股基权交易量(含融资融券)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3770" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "074" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_总佣金(含融资融券)(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3820" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "075" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_总净佣金(含融资融券)(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3870" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "076" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_港股通交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3920" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "077" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_港股通佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="3970" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "078" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_港股通交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="4020" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "079" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_港股通佣金(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="4070" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "080" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本年_港股通总开户数]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="4120" y="0" width="50" height="40" isPrintWhenDetailOverflows="true" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "081" )]]></printWhenExpression>
+				</reportElement>
+				<text><![CDATA[本期_日均多金融产品市值(万)]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="170" y="0" width="50" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "002" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="220" y="0" width="50" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "003" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="270" y="0" width="50" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "004" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{WARRANT_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="320" y="0" width="50" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "005" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="370" y="0" width="50" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "006" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_MARKET_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="420" y="0" width="50" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "007" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="470" y="0" width="50" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "008" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_MARKET_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="520" y="0" width="50" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "009" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="570" y="0" width="50" height="15" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "010" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="620" y="0" width="50" height="15" uuid="589f0e50-d241-47ea-bf05-aec0e9d56c7d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "011" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="670" y="0" width="50" height="15" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "012" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_BALANCE_AVG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="720" y="0" width="50" height="15" uuid="a7d1da09-1b5d-45ac-996e-ebbedbc3e494">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "013" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_AVG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="770" y="0" width="50" height="15" uuid="51f9093f-a111-49e4-974b-997e483f66ad">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "014" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_AVG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="820" y="0" width="50" height="15" uuid="842965e1-0f9f-4673-9cb6-47772df6f164">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "015" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_BALANCE_CLOSE_P}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="870" y="0" width="50" height="15" uuid="a08f1c5e-0ae0-414a-ae4c-70f47f802c7a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "016" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_CLOSE_P}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="920" y="0" width="50" height="15" uuid="1e770b80-dc1a-41e6-97ab-43e6fe1a2f8b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "017" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_CLOSE_P}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="970" y="0" width="50" height="15" uuid="0d903170-c34c-4729-a675-86410f549cb1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "018" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1020" y="0" width="50" height="15" uuid="d9114e55-0f93-4859-874b-24c522f4f08e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "019" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1070" y="0" width="50" height="15" uuid="bedba275-aa56-44b4-94b1-f9db37332e33">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "020" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{WARRANT_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1120" y="0" width="50" height="15" uuid="27bd895c-c15a-4cc1-a507-5ec1ca754ce3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "021" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1170" y="0" width="50" height="15" uuid="45b87f30-e97b-4294-8106-960203c03c6d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "022" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_MARKET_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1220" y="0" width="50" height="15" uuid="7db4a5e4-21ed-4d29-b8e3-812e6d13c9b9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "023" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1270" y="0" width="50" height="15" uuid="531ac0ed-74dc-4968-937a-07ee4f4d283c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "024" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_MARKET_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1320" y="0" width="50" height="15" uuid="99729822-d75a-483e-88b3-dc67fa5cea2e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "025" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1370" y="0" width="50" height="15" uuid="2d85dd06-3576-4ac2-bbc8-471cdd09031b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "026" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1420" y="0" width="50" height="15" uuid="22faf5e9-66ea-4e01-9c06-92e7b7180e31">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "027" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1470" y="0" width="50" height="15" uuid="9a8baadf-7da0-4bc2-ab78-558949223b29">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "028" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_BALANCE_AVG_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1520" y="0" width="50" height="15" uuid="ca943cb3-6284-4363-8ab1-466a64d8f302">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "029" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_AVG_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1570" y="0" width="50" height="15" uuid="16c15c16-3718-4813-9cee-170200d95e74">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "030" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_AVG_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1620" y="0" width="50" height="15" uuid="2664f5dd-ef46-4428-a413-fb821a3a6c17">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "031" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_BALANCE_CLOSE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1670" y="0" width="50" height="15" uuid="e68b272c-f45d-4318-8a35-17a79dd5d92f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "032" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_CLOSE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1720" y="0" width="50" height="15" uuid="a4146f77-81b0-485a-8c7e-8312561c80f0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "033" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_CLOSE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1770" y="0" width="50" height="15" uuid="687913ec-679e-48ff-a255-7817a5f6f4d1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "034" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM_TOTAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1820" y="0" width="50" height="15" uuid="434a363e-1059-4798-a0cc-eb28e0b8b322">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "035" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{B_STOCK_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1870" y="0" width="50" height="15" uuid="83cc28c7-76b4-402f-8ba8-2cc055cbd6c2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "036" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{B_STOCK_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1920" y="0" width="50" height="15" uuid="7daccc7d-7ebd-4a5c-811f-f6f0bd907f92">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "037" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1970" y="0" width="50" height="15" uuid="1bffa3af-32f8-46fc-bf87-eb7768387220">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "038" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2020" y="0" width="50" height="15" uuid="7e77c659-6580-4e2e-acc9-679b234c47e9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "039" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{NET_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2070" y="0" width="50" height="15" uuid="c7392a6b-1997-43f3-a26b-bb3011ed7321">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "040" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{NET_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2120" y="0" width="50" height="15" uuid="e3639f34-5256-4474-9adc-9feaff53e673">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "041" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2170" y="0" width="50" height="15" uuid="09b48113-6338-49d5-9367-8d7b06a58327">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "042" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2220" y="0" width="50" height="15" uuid="b1e6132f-35ee-45ff-8e07-61ec47743e60">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "043" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_NET_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2270" y="0" width="50" height="15" uuid="6e74eec1-fe1c-4cdd-8d85-49d929f4d781">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "044" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2320" y="0" width="50" height="15" uuid="a4486f88-70cb-4b81-a09e-7ba8b0fb8b9b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "045" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2370" y="0" width="50" height="15" uuid="b1279838-c36a-4649-82dc-4cf7feb58414">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "046" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_NET_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2420" y="0" width="50" height="15" uuid="7aee8cad-0d6d-4152-8cee-e91ec59316ae">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "047" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_CLOSE_P}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2470" y="0" width="50" height="15" uuid="fbacbcaf-34fa-4878-a84b-372d227b84ac">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "048" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_CLOSE_P}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2520" y="0" width="50" height="15" uuid="32d8e42c-40ff-433f-9e2c-63e49d0cc51e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "049" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2570" y="0" width="50" height="15" uuid="5f729804-3c26-4657-9fc0-a7e31fbc0693">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "050" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2620" y="0" width="50" height="15" uuid="33e2d611-fe2f-4244-be05-a39c46f7da29">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "051" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CREDIT_NET_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2670" y="0" width="50" height="15" uuid="e5e452f7-9bf6-4de9-9cd7-c831ab007bb2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "052" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2720" y="0" width="50" height="15" uuid="63e51fdc-2aae-4ac2-b2e7-9f617d3e345e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "053" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2770" y="0" width="50" height="15" uuid="7f2c5b0b-987b-4548-beda-15b023e5cbb8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "054" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_NET_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2820" y="0" width="50" height="15" uuid="c04c133d-9868-41fe-b828-adcaac745141">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "055" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_CLOSE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2870" y="0" width="50" height="15" uuid="6504ce05-9163-4c91-a912-35429ef0525f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "056" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_CLOSE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2920" y="0" width="50" height="15" uuid="170512b1-1fd9-4649-bb46-09f21f9d7550">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "057" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_MARKET_AMOUNT_ALL_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2970" y="0" width="50" height="15" uuid="15b6fe68-b798-4d8b-8c3a-0f78a74f5d1f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "058" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_MARKET_AMOUNT_ALL_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3020" y="0" width="50" height="15" uuid="d1acffd4-6e34-44c0-950c-5cc2fc1ad694">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "059" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_MARKET_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3070" y="0" width="50" height="15" uuid="48675976-53a9-4ea5-a411-fcced7150dcd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "060" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_MARKET_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3120" y="0" width="50" height="15" uuid="eeb5c3c8-a772-4c4f-a6e9-1146bd064a01">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "061" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_ALL_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3170" y="0" width="50" height="15" uuid="46c55ecb-09c1-44de-9e72-cfbde868c443">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "062" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3220" y="0" width="50" height="15" uuid="c677c8fd-8e4c-4d6c-9c6a-c2758b2a8358">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "063" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_AMOUNT_ALL_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3270" y="0" width="50" height="15" uuid="3efd6c5c-433f-4369-a56d-6fc267315af4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "064" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SF_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3320" y="0" width="50" height="15" uuid="3b716159-c980-4e63-acfd-61ab7e8fc56b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "065" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_AVG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3370" y="0" width="50" height="15" uuid="e1a7db96-3667-4967-adda-9c9ec09f65b6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "066" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_AVG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3420" y="0" width="50" height="15" uuid="a52e15b9-dc9e-4c58-8553-32f4446e4b73">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "067" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_AVG_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3470" y="0" width="50" height="15" uuid="89344a16-5934-4304-895e-ba91796d6219">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "068" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_AVG_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3520" y="0" width="50" height="15" uuid="a7d16613-ba42-4548-9d41-325443f275f6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "069" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_OPEN_CUST_NUM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3570" y="0" width="50" height="15" uuid="2d0bfa0d-448c-4e3a-a947-0acac17efe3b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "070" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_ALL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3620" y="0" width="50" height="15" uuid="541bbd2d-af25-419f-a190-f8197f9b23c2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "071" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMISSION_ALL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3670" y="0" width="50" height="15" uuid="0ecd7fc4-b848-45d5-9bc2-0823218f751b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "072" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{NET_COMMISSION_ALL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3720" y="0" width="50" height="15" uuid="9d41ea95-7cbe-4c4b-a1da-1aee7cdb7c8b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "073" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_ALL_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3770" y="0" width="50" height="15" uuid="5e173ced-4957-402a-ba53-d3059aa5f45d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "074" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMISSION_ALL_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3820" y="0" width="50" height="15" uuid="559d6054-0dcc-4d7e-8326-9a85a3582164">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "075" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{NET_COMMISSION_ALL_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3870" y="0" width="50" height="15" uuid="158e9b20-bbb9-4bd3-9d91-2656cb9fc15f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "076" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{HK_STOCK_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3920" y="0" width="50" height="15" uuid="e00db2ce-b319-466c-afa6-64650ed9d92a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "077" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{HK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="3970" y="0" width="50" height="15" uuid="3ab5934b-6bc6-4e79-aacb-3fad58b09b6b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "078" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{HK_STOCK_AMOUNT_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="4020" y="0" width="50" height="15" uuid="287eea10-c158-4c3a-9b73-f95845ca18af">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "079" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{HK_COMMISSION_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="4070" y="0" width="50" height="15" uuid="f74bf847-91b2-47b8-a84a-707e8b134cca">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "080" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{HK_OPEN_CUST_NUM_Y}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="4120" y="0" width="50" height="15" uuid="487a98ca-ebb8-4553-a2d7-d31aaf43795c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{indexId}.contains( "080" )]]></printWhenExpression>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MULTI_FINANCIAL_AMOUNT_AVG}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

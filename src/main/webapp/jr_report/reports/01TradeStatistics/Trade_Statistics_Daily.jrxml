@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="分支机构统计日报" pageWidth="2750" pageHeight="280" whenNoDataType="AllSectionsNoDetail" columnWidth="2750" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="99f07307-27d4-499f-b61b-894610fa2d7a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CT_Kylin"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="net.sf.jasperreports.export.html.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.html.id" value="Trade_Statistics_Daily"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.column" value="C"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="4"/>
+	<style name="Report_Title" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#29203D"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+		</box>
+	</style>
+	<style name="Report_Header" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#35304D"/>
+		</box>
+	</style>
+	<style name="Report_Detail" mode="Opaque" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="9">
+		<box>
+			<pen lineWidth="1.0" lineColor="#46425B"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+		</box>
+	</style>
+	<parameter name="startDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="branchNo" class="java.lang.String"/>
+	<parameter name="indexId" class="java.lang.String"/>
+	<parameter name="exportType" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[with all_cust_num as (
+select INIT_DATE,
+       BRANCH_CODE as BRANCH_NO,
+       ALL_OPEN_CUST_NUM
+from REPORT.TRADE_STATISTICS_WEEKLY
+where INIT_DATE = $P!{endDate}
+      and $P!{branchNo})
+select  b.NAME as BRANCH_NAME,
+        round(cast(coalesce(a.TRADE_AMOUNT,0)/10000 as decimal),2) as TRADE_AMOUNT,
+        round(cast(coalesce(a.STOCK_AMOUNT,0)/10000 as decimal),2) as STOCK_AMOUNT,
+        round(cast(coalesce(a.PLEDGE_AMOUNT,0)/10000 as decimal),2) as PLEDGE_AMOUNT,
+        round(cast(coalesce(a.FUND_AMOUNT,0)/10000 as decimal),2) as FUND_AMOUNT,
+        round(cast(coalesce(a.MARGIN_STOCK_AMOUNT,0)/10000 as decimal),2) as MARGIN_STOCK_AMOUNT,
+        round(cast(coalesce(a.MARGIN_FUND_AMOUNT,0)/10000 as decimal),2) as MARGIN_FUND_AMOUNT,
+        round(cast(coalesce(a.MARGIN_BOND_AMOUNT,0)/10000 as decimal),2) as MARGIN_BOND_AMOUNT,
+        round(cast(coalesce(a.ALL_TRADE_AMOUNT,0)/10000 as decimal),2) as ALL_TRADE_AMOUNT,
+        round(cast(coalesce(a.COMMISSION,0)/10000 as decimal),2) as COMMISSION,
+        round(cast(coalesce(a.STOCK_COMMISSION,0)/10000 as decimal),2) as STOCK_COMMISSION,
+        round(cast(coalesce(a.FUND_COMMISSION,0)/10000 as decimal),2) as FUND_COMMISSION,
+        round(cast(coalesce(a.MARGIN_STOCK_COMMISSION,0)/10000 as decimal),2) as MARGIN_STOCK_COMMISSION,
+        round(cast(coalesce(a.MARGIN_FUND_COMMISSION,0)/10000 as decimal),2) as MARGIN_FUND_COMMISSION,
+        round(cast(coalesce(a.MARGIN_BOND_COMMISSION,0)/10000 as decimal),2) as MARGIN_BOND_COMMISSION,
+        round(cast(coalesce(a.ALL_COMMISSION,0)/10000 as decimal),2) as ALL_COMMISSION,
+        round(cast(coalesce(a.ALL_STOCK_COMMISSION,0)/10000 as decimal),2) as ALL_STOCK_COMMISSION,
+        round(cast(coalesce(a.ALL_FUND_COMMISSION,0)/10000 as decimal),2) as ALL_FUND_COMMISSION,
+        round(cast(coalesce(a.ALL_MARGIN_STOCK_COMMISSION,0)/10000 as decimal),2) as ALL_MARGIN_STOCK_COMMISSION,
+        round(cast(coalesce(a.ALL_MARGIN_FUND_COMMISSION,0)/10000 as decimal),2) as ALL_MARGIN_FUND_COMMISSION,
+        round(cast(coalesce(a.ALL_MARGIN_BOND_COMMISSION,0)/10000 as decimal),2) as ALL_MARGIN_BOND_COMMISSION,
+        coalesce(a.OPEN_CUST_NUM,0) as OPEN_CUST_NUM,
+        coalesce(a1.ALL_OPEN_CUST_NUM,0) as ALL_OPEN_CUST_NUM,
+        round(cast(coalesce(a.MARKET_RATE,0)*100 as decimal),4) as MARKET_RATE,
+        round(cast(coalesce(a.ALL_MARKET_RATE,0)*100 as decimal),4) as ALL_MARKET_RATE,
+        round(cast(coalesce(a.CHECK_MARKET_RATE_FD,0)*100 as decimal),4) as CHECK_MARKET_RATE_FD,
+        round(cast(coalesce(a.LASTYEAR_MARKET_RATE,0)*100 as decimal),4) as LASTYEAR_MARKET_RATE,
+        round(cast(coalesce(a.MARKET_RATE_CHANGE,0)*100 as decimal),4) as MARKET_RATE_CHANGE,
+        round(cast(coalesce(a.STOCK_RATE,0)*1000 as decimal),4) as STOCK_RATE,
+        round(cast(coalesce(a.ALL_STOCK_RATE,0)*1000 as decimal),4) as ALL_STOCK_RATE
+from REPORT.TRADE_STATISTICS_DAILY a
+inner join all_cust_num a1 on a.INIT_DATE=a1.INIT_DATE and a.BRANCH_CODE=a1.BRANCH_NO
+inner join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE=b.ID
+where a.INIT_DATE = $P!{endDate}
+      and $P!{branchNo}
+order by a.BRANCH_CODE]]>
+	</queryString>
+	<field name="BRANCH_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BRANCH_NAME"/>
+	</field>
+	<field name="TRADE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="TRADE_AMOUNT"/>
+	</field>
+	<field name="STOCK_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_AMOUNT"/>
+	</field>
+	<field name="PLEDGE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="PLEDGE_AMOUNT"/>
+	</field>
+	<field name="FUND_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_AMOUNT"/>
+	</field>
+	<field name="MARGIN_STOCK_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_STOCK_AMOUNT"/>
+	</field>
+	<field name="MARGIN_FUND_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_FUND_AMOUNT"/>
+	</field>
+	<field name="MARGIN_BOND_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_BOND_AMOUNT"/>
+	</field>
+	<field name="ALL_TRADE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_TRADE_AMOUNT"/>
+	</field>
+	<field name="COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COMMISSION"/>
+	</field>
+	<field name="STOCK_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_COMMISSION"/>
+	</field>
+	<field name="FUND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FUND_COMMISSION"/>
+	</field>
+	<field name="MARGIN_STOCK_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_STOCK_COMMISSION"/>
+	</field>
+	<field name="MARGIN_FUND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_FUND_COMMISSION"/>
+	</field>
+	<field name="MARGIN_BOND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARGIN_BOND_COMMISSION"/>
+	</field>
+	<field name="ALL_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_COMMISSION"/>
+	</field>
+	<field name="ALL_STOCK_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_STOCK_COMMISSION"/>
+	</field>
+	<field name="ALL_FUND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_FUND_COMMISSION"/>
+	</field>
+	<field name="ALL_MARGIN_STOCK_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_MARGIN_STOCK_COMMISSION"/>
+	</field>
+	<field name="ALL_MARGIN_FUND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_MARGIN_FUND_COMMISSION"/>
+	</field>
+	<field name="ALL_MARGIN_BOND_COMMISSION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_MARGIN_BOND_COMMISSION"/>
+	</field>
+	<field name="OPEN_CUST_NUM" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_CUST_NUM"/>
+	</field>
+	<field name="ALL_OPEN_CUST_NUM" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_OPEN_CUST_NUM"/>
+	</field>
+	<field name="MARKET_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARKET_RATE"/>
+	</field>
+	<field name="ALL_MARKET_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_MARKET_RATE"/>
+	</field>
+	<field name="CHECK_MARKET_RATE_FD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CHECK_MARKET_RATE_FD"/>
+	</field>
+	<field name="LASTYEAR_MARKET_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="LASTYEAR_MARKET_RATE"/>
+	</field>
+	<field name="MARKET_RATE_CHANGE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MARKET_RATE_CHANGE"/>
+	</field>
+	<field name="STOCK_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_RATE"/>
+	</field>
+	<field name="ALL_STOCK_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ALL_STOCK_RATE"/>
+	</field>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{ROW_COUNT}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Title" mode="Opaque" x="0" y="0" width="2750" height="20" uuid="46f0c0eb-1f84-417e-88fb-93a05c63e505">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$P{exportType}.equals( "xlsx" )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["财通证券分支机构交易统计日报表 （"+$P{startDate}.toString()+" - "+$P{endDate}.toString()+" )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="50" height="40" uuid="05a672f1-fcdf-4164-9ea2-f89859f3789e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[排名]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="50" y="0" width="120" height="40" uuid="080211bb-9451-4ebf-a4b3-a1757e473247">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[分支机构名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="170" y="0" width="630" height="20" uuid="86e69d33-3ea2-4bcf-ab52-9a9ca08cd068">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[当日_交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="800" y="0" width="90" height="40" uuid="925e64b6-51b5-49bd-82d2-93bc1f3fd449">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[累计_交易量(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="890" y="20" width="90" height="20" uuid="2aafabab-171b-4ef2-8375-7eaa04e8d265">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="1460" y="0" width="570" height="20" uuid="d5022895-790c-45ac-9c72-1628197257fd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[累计_佣金收入(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2030" y="0" width="80" height="40" uuid="33fa1ac7-5c35-4776-a101-857a2ec2b9d5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[当日_新开户]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2110" y="0" width="80" height="40" uuid="73c8bb94-81f8-44f3-be36-c9a338284f6e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[累计_新开户]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2190" y="20" width="80" height="20" uuid="64f52be0-bbe5-4a31-bee7-1fb081c74ba2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[当日]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2270" y="20" width="80" height="20" uuid="e3f4b81b-6219-4133-b138-e30ae7ce7031">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[累计]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2350" y="20" width="80" height="20" uuid="6803b556-fc92-46e4-a901-c58245fe1ed5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[考核累计(含基金分仓)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2430" y="20" width="80" height="20" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[去年]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2510" y="20" width="80" height="20" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[变动幅度]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2590" y="20" width="80" height="20" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[当日]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2670" y="20" width="80" height="20" uuid="765b444f-70ee-4952-9ae1-af523d68f1dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[累计]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2190" y="0" width="400" height="20" uuid="dcb9b433-8ae7-4fe8-815b-d8053b12cc5c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[市占率(股+基)%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="2590" y="0" width="160" height="20" uuid="19ddb9dc-0843-4ed8-b8f2-c1e7b53c40da">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票费率(‰)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="170" y="20" width="90" height="20" uuid="f59988c0-fc5a-4518-beb6-bb1434c73810">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="260" y="20" width="90" height="20" uuid="1b949eda-941f-43b4-be39-cbb7fe0b4bb5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="350" y="20" width="90" height="20" uuid="d06635c0-f196-4e14-b271-64891fa01a65">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票质押交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="440" y="20" width="90" height="20" uuid="98dd8d48-8021-43ef-9739-86f89ace84b4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[基金交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="530" y="20" width="90" height="20" uuid="c5eef8ce-6983-4ef9-8371-cc016b29ae38">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券股票交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="620" y="20" width="90" height="20" uuid="6220cb53-def1-463b-bca7-ea9b91b21021">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券基金交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="710" y="20" width="90" height="20" uuid="5bdd7ef8-b0be-42a7-b348-f46663a8c316">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券债券交易量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="890" y="0" width="570" height="20" uuid="299f25c2-a010-4bc4-8144-174a5b728af4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[当日_佣金收入(万)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="980" y="20" width="90" height="20" uuid="3fc14ce1-d5c0-4ab0-a700-4cc9a94a8f9f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票交易佣金]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1070" y="20" width="90" height="20" uuid="a2d4c903-5110-4d3f-aa80-1bc2bb181504">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[基金交易佣金]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1160" y="20" width="100" height="20" uuid="fd0c4dd7-4f0a-43c8-bfef-f95f54d15cf2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券股票佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1260" y="20" width="100" height="20" uuid="37140d94-4114-4651-b2bc-39d1ec49ad11">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券基金佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1360" y="20" width="100" height="20" uuid="473d8878-b5e2-43a8-8fd8-6cc64057cff0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券债券佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="1460" y="20" width="90" height="20" uuid="44e4aa42-c63b-4d34-bbcf-bd558750cbcc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1550" y="20" width="90" height="20" uuid="fa63738d-9517-44b0-af6f-0c48f617571e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[股票交易佣金]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1640" y="20" width="90" height="20" uuid="c2699220-9c79-4451-9996-9005104c3739">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[基金交易佣金]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1730" y="20" width="100" height="20" uuid="3b56ee41-b2ec-4e65-82c4-06198bdf20d4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券股票佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1830" y="20" width="100" height="20" uuid="5b2a0130-01f1-4b73-85e0-5656e0f67338">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券基金佣金收入]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1930" y="20" width="100" height="20" uuid="abd17d7b-d87b-426f-b83e-2854e55217b4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[融资融券债券佣金收入]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="170" y="0" width="90" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{TRADE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="260" y="0" width="90" height="15" uuid="470f3e70-1536-46a2-99a7-24920a9cf34a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="350" y="0" width="90" height="15" uuid="572705ec-6ea9-4a86-93df-108d3e54c89e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{PLEDGE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="440" y="0" width="90" height="15" uuid="fc644b51-338b-4d82-8072-b8a41362f737">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="530" y="0" width="90" height="15" uuid="be6eb0ff-d794-40aa-9d89-480c62b1e9dc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_STOCK_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="620" y="0" width="90" height="15" uuid="e6fae5a4-7edd-4ac9-a090-809e834e6236">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_FUND_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="710" y="0" width="90" height="15" uuid="56f1be6e-fca8-496b-ad5c-241d672ed65a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_BOND_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="800" y="0" width="90" height="15" uuid="5bc30521-674c-4f44-a977-6d6d7e429ec9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_TRADE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="890" y="0" width="90" height="15" uuid="ae99c3bb-96c9-4808-8b7c-b312cc56d3c8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="980" y="0" width="90" height="15" uuid="c8a11979-cff3-48cd-9c7f-21811436ed41">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1070" y="0" width="90" height="15" uuid="ae59eeae-89b4-4d7e-9eac-f8c8f45a7fb2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FUND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1160" y="0" width="100" height="15" uuid="84decacb-6945-4aec-9f11-fe93cdbde26a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_STOCK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1260" y="0" width="100" height="15" uuid="8d559a9d-9841-4827-b53d-1417e932d4e7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_FUND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1360" y="0" width="100" height="15" uuid="5e098cd1-ab69-4ffb-91f1-db5b469aa706">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARGIN_BOND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1460" y="0" width="90" height="15" uuid="d711ab15-19ec-45ac-9d50-9f60c3c9d9c5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1550" y="0" width="90" height="15" uuid="8d22a22c-d36f-457f-ab54-87e0fd094315">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_STOCK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1640" y="0" width="90" height="15" uuid="f3f17ed9-5081-4a5f-b5d9-93896b053a13">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_FUND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1730" y="0" width="100" height="15" uuid="025fa3e0-78f3-4c68-aeb8-bfaa4a425ac2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_MARGIN_STOCK_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1830" y="0" width="100" height="15" uuid="7ea4dc0a-69f4-4f2a-8979-f16c4897f0db">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_MARGIN_FUND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1930" y="0" width="100" height="15" uuid="53edb27b-f981-4e08-8be8-d8987de96287">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_MARGIN_BOND_COMMISSION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2030" y="0" width="80" height="15" uuid="8d52dd96-bd86-41c8-911c-81d6348fce7a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2110" y="0" width="80" height="15" uuid="1e29a6b2-7622-4768-824f-5d176556153f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_OPEN_CUST_NUM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2190" y="0" width="80" height="15" uuid="dc8f0316-d3ab-43bc-befa-72b59280d2f1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARKET_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2270" y="0" width="80" height="15" uuid="09ae761f-df7d-4d27-b8ea-036f7eba191f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_MARKET_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2350" y="0" width="80" height="15" uuid="9eb749de-4901-4813-baa6-5b5588daf170">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CHECK_MARKET_RATE_FD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2430" y="0" width="80" height="15" uuid="996a7458-f113-4775-843b-a736fc25adb5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{LASTYEAR_MARKET_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2510" y="0" width="80" height="15" uuid="788879cc-225b-4294-855f-4f29ab1f75af">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{MARKET_RATE_CHANGE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2590" y="0" width="80" height="15" uuid="8eb369a7-6ab8-4727-8163-535ee04fd2bb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{STOCK_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="2670" y="0" width="80" height="15" uuid="8794dd01-5f9d-4d20-b410-bbf41fc3d992">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ALL_STOCK_RATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

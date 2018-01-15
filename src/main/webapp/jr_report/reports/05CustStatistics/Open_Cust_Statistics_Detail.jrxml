@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="新开户情况明细报表" pageWidth="890" pageHeight="280" whenNoDataType="AllSectionsNoDetail" columnWidth="890" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="99f07307-27d4-499f-b61b-894610fa2d7a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CT_Kylin"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="net.sf.jasperreports.export.html.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.html.id" value="JF_Report_01"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.column" value="C"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="3"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="343"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="647"/>
+	<style name="Report_Title" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#29203D"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+		</box>
+	</style>
+	<style name="Report_Header" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#35304D"/>
+		</box>
+	</style>
+	<style name="Report_Detail" mode="Opaque" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="9">
+		<box>
+			<pen lineWidth="1.0" lineColor="#46425B"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+		</box>
+	</style>
+	<parameter name="startDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA["20171101"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA["20171109"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="branchNo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["BEANCH_CODE in ('101','102','103')"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="indexId" class="java.lang.String">
+		<defaultValueExpression><![CDATA["001,002,003,004"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="exportType" class="java.lang.String"/>
+	<parameter name="assetSection" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select b.NAME as BRANCH_NAME,
+       CUST_NO,
+       CUST_NAME, 
+       OPEN_DATE, 
+       (case when OPEN_WAY = 0 then '临柜开户'
+             when OPEN_WAY = 1 then '见证开户'
+             when OPEN_WAY = 2 then '网上开户'
+       else '其他' end) as OPEN_WAY,
+       (case when INNER_TRANS_MARK = 1 then '是' else '否' end) as INNER_TRANS_MARK,
+       (case when LIMIT_SALE_MARK = 1 then '是' else '否' end) as LIMIT_SALE_MARK,
+       (case when REWARD_MARK = 1 then '是' else '否' end) as REWARD_MARK,
+       (case when COOP_MARK = 1 then '是' else '否' end) as COOP_MARK,
+       round(cast(coalesce(ASSET_RATIO*100,0) as decimal),2) as ASSET_RATIO
+from REPORT.OPEN_CLIENT_STATISTICS a
+inner join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE=b.ID
+where OPEN_DATE between $P!{startDate} and $P!{endDate}
+      and $P!{branchNo}
+order by a.BRANCH_CODE]]>
+	</queryString>
+	<field name="BRANCH_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BRANCH_NAME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DIM_BRANCH"/>
+	</field>
+	<field name="CUST_NO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="OPEN_CLIENT_STATISTICS"/>
+	</field>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="OPEN_CLIENT_STATISTICS"/>
+	</field>
+	<field name="OPEN_DATE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_DATE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="OPEN_CLIENT_STATISTICS"/>
+	</field>
+	<field name="OPEN_WAY" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="OPEN_WAY"/>
+	</field>
+	<field name="INNER_TRANS_MARK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="INNER_TRANS_MARK"/>
+	</field>
+	<field name="LIMIT_SALE_MARK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LIMIT_SALE_MARK"/>
+	</field>
+	<field name="REWARD_MARK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="REWARD_MARK"/>
+	</field>
+	<field name="COOP_MARK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_MARK"/>
+	</field>
+	<field name="ASSET_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_RATIO"/>
+	</field>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{ROW_COUNT}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Report_Title" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="890" height="20" isPrintWhenDetailOverflows="true" uuid="9cbc0acb-9594-4fbf-94c5-31fb9fd6053a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.export.html.class" value="ant-table-scroll"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["新开户情况明细报表 （"+$P{endDate}.toString()+" )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="30" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="0" y="0" width="50" height="30" isPrintWhenDetailOverflows="true" uuid="05a672f1-fcdf-4164-9ea2-f89859f3789e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="50" y="0" width="120" height="30" isPrintWhenDetailOverflows="true" uuid="080211bb-9451-4ebf-a4b3-a1757e473247">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[分支机构名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="170" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="925e64b6-51b5-49bd-82d2-93bc1f3fd449">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[客户编号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="250" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="2aafabab-171b-4ef2-8375-7eaa04e8d265">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[客户名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="330" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="d5022895-790c-45ac-9c72-1628197257fd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户日期]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="410" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="a8973dda-6163-4f2f-8693-bfa849cc859f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户方式]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="490" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="73c8bb94-81f8-44f3-be36-c9a338284f6e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[内转客户
+（是/否）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="570" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="64f52be0-bbe5-4a31-bee7-1fb081c74ba2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[限售股客户
+（是/否）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="650" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="6803b556-fc92-46e4-a901-c58245fe1ed5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[引流客户
+（是/否）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="730" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="abced01e-c04d-4bbb-9499-a7c3bc24fc2e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作开发标记
+（是/否）]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="810" y="0" width="80" height="30" isPrintWhenDetailOverflows="true" uuid="4e1be41b-aad1-4b9b-b596-6b808b32a57f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="net.sf.jasperreports.allow.element.overlap" value="true"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[资产比例]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUST_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_DATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OPEN_WAY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{INNER_TRANS_MARK}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{LIMIT_SALE_MARK}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{REWARD_MARK}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" uuid="2cd3aa25-8f90-48bd-b273-716e2d33eb2e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_MARK}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="810" y="0" width="80" height="15" uuid="40525048-69f5-43b5-a758-3aa2aaf25800">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_RATIO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

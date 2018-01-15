@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    
+    <!-- 日志项目目录 -->
+    <property name="BASEDIR" value="/opt/web" />
+    <!-- 日志文件目录 -->
+    <property name="SERVERLOGDIR" value="${BASEDIR}/logs/jf" />
+    <!-- 日志通用格式 -->
+    <property name="PATTERN" value="[%d] [%-5level] [%thread] [%logger] - %msg%n" />
+    
+    <!-- 控制台标准输出appender定义 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- 业务日志appender定义 -->
+    <appender name="commonAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${SERVERLOGDIR}/common.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- roll over daily -->
+            <fileNamePattern>${SERVERLOGDIR}/common.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1024MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 日志appender定义 -->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <File>${SERVERLOGDIR}/error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- roll over daily -->
+            <fileNamePattern>${SERVERLOGDIR}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1024MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 请求访问输入输出日志appender定义 -->
+    <appender name="accessAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${SERVERLOGDIR}/access.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- roll over daily -->
+            <fileNamePattern>${SERVERLOGDIR}/access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1024MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 输入输出请求日志  -->
+    <logger name="com.ctsec.config.aop.WebLogAspect" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="accessAppender" />
+    </logger>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="commonAppender"/>
+        <appender-ref ref="errorAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="commonAppender"/>
+        <appender-ref ref="errorAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.ctsec" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="commonAppender"/>
+        <appender-ref ref="errorAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="commonAppender"/>
+    </root>
+    <!--<root level="DEBUG">-->
+        <!--<appender-ref ref="STDOUT"/>-->
+    <!--</root>-->
+</configuration>

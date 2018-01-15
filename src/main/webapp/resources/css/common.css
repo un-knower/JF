@@ -1,0 +1,151 @@
+.ant-tooltip-content .ant-tooltip-inner{ max-width: 800px;}
+/*经营报表-交易统计*/
+.ant-select-export.ant-select .ant-select-selection.ant-select-selection--single{
+    min-width: 80px
+
+}
+.ant-select-export.ant-select{
+    margin-left: -7px; margin-right: 16px;
+}
+.ant-branch-left.ant-select{
+    margin-left: 7px;
+    position: absolute;
+    z-index: 9;
+    margin-top: -4px;
+
+}
+.ant-branch-left .ant-select-selection--multiple{
+    min-height: 30px;
+    font-size: 14px;
+}
+.ant-select-dropdown-transaction.ant-select-dropdown{
+    height: 170px;
+
+}
+.ant-select-dropdown-transaction::-webkit-scrollbar{
+    width: 8px;
+    height: 10px;
+    background-color: #fff;
+}
+.ant-select-dropdown-transaction::-webkit-scrollbar-thumb{
+
+    height: 15px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.5);
+    background-color: #fff;
+}
+.ant-select-dropdown-transaction::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px #fff;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.ant-table-scroll .ant-table-body{max-height:480px;}
+/**/
+.ant-back-top{
+    right:25px;
+}
+.gotoTop img{
+    border-radius: 4px;
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,.15);
+}
+/*经营报表*/
+.transaction_table .ant-table-fixed-header .ant-table-scroll .ant-table-header{
+    background:#2c253f;
+    overflow-y: hidden;
+}
+.transaction_table .ant-table-wrapper .ant-table-fixed  .ant-table-thead > tr > th {
+     background: #2c253f }
+.transaction_table .ant-table-fixed-header  .ant-table-content  .ant-table-scroll  .ant-table-body,
+.transaction_table .ant-table-fixed-left table,.transaction_table .ant-table-fixed-right table
+{background: #484355;}
+
+.baselayout  .rsuite-table.table-hover .rsuite-table-row-header .rsuite-table-cell{
+     background: #29203d;
+     color: #fff;
+     font-size: 14px;
+     border-right: 1px solid #48405b;
+}
+.baselayout .rsuite-table.table-hover .rsuite-table-row-header{ background: #29203d;}
+.baselayout  .rsuite-table{
+    border: none;
+    border-radius: 6px;
+}
+.baselayout .rsuite-table-row{
+    border-bottom: none
+}
+.baselayout .rsuite-table-cell{
+    background: #47415b;
+    color: #d8d7dc;
+    border-right: 1px solid #48405b;
+
+}
+
+.baselayout .rsuite-table-row:nth-child(even) .rsuite-table-cell{
+    background: #3c354a
+}
+.baselayout .rsuite-table-row:hover .rsuite-table-cell{
+    background:#7d7984;
+        color: #fff;
+}
+.baselayout .rsuite-table-column-resize-spanner:hover {
+    background: #48405b;
+}
+.icon-sort,.icon-sort-asc,.icon-sort-desc{
+    background: url(../../resources/images/ico_1.png) no-repeat;
+    display: inline-block;
+    width: 8px;
+    height: 13px;
+    background-position: 0px 0px;
+    margin-top: 5px;
+}
+.icon-sort-desc{
+     background: url(../../resources/images/ico_2.png) no-repeat;
+}
+.icon-sort-asc{
+    background: url(../../resources/images/ico_3.png) no-repeat;
+}
+.baselayout .rsuite-table-scrollbar-wrapper {
+    background: #48405b;
+
+}
+.baselayout  .rsuite-table-scrollbar-wrapper.vertical:hover, .baselayout  .rsuite-table-scrollbar-wrapper.vertical.active,.baselayout  .rsuite-table-scrollbar-wrapper.horizontal:hover,.baselayout  .rsuite-table-scrollbar-wrapper.horizontal.active {
+
+    box-shadow: none;
+}
+
+.baselayout   .rsuite-table-scrollbar-wrapper .scrollbar-handle {
+    position: absolute;
+    background: rgb(182, 182, 190);
+    border-radius: 4px;
+}
+.baselayout .rsuite-table-body-row-wrapper{
+    background: #3c344a;
+}
+
+.kpi_asset_bg .card_layout_module .ant-card{
+    margin-top: 0px
+
+}
+
+.kpi_asset_bg .branch_container_title span{width: 132px;
+    left: 50%;top:40px;
+    margin-left: -66px;}
+.transaction_table_bb .baselayout .rsuite-table{
+    z-index: 9
+}
+.transaction_table_bb  .ant-table-placeholder  {
+    background: #47415b;
+    border-bottom: 1px solid #47415b;
+    font-size: 14px;
+    color: #c6c4ca;
+    z-index: 0
+
+}
+.transaction_table_bb  .ant-spin-nested-loading > div > .ant-spin{
+    background: #46425b;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+.transaction_table_bb .ant-spin-nested-loading > div > .ant-spin.ant-spin-show-text .ant-spin-dot{
+    margin-top: 40px;
+}

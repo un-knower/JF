@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.0.final using JasperReports Library version 6.5.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="合作开发客户报表" pageWidth="1350" pageHeight="280" whenNoDataType="AllSectionsNoDetail" columnWidth="1350" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="99f07307-27d4-499f-b61b-894610fa2d7a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CT_Kylin"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="net.sf.jasperreports.export.html.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.html.id" value="CaiTongSalesDaily"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.column" value="C"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="3"/>
+	<style name="Report_Title" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#29203D"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#29203D"/>
+		</box>
+	</style>
+	<style name="Report_Header" mode="Opaque" backcolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="10">
+		<box>
+			<pen lineWidth="1.0" lineColor="#35304D"/>
+		</box>
+	</style>
+	<style name="Report_Detail" mode="Opaque" hTextAlign="Center" vTextAlign="Middle" fontName="微软雅黑" fontSize="9">
+		<box>
+			<pen lineWidth="1.0" lineColor="#46425B"/>
+			<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+			<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#46425B"/>
+		</box>
+	</style>
+	<parameter name="startDate" class="java.lang.String"/>
+	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="branchNo" class="java.lang.String"/>
+	<parameter name="indexId" class="java.lang.String"/>
+	<parameter name="startDate1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endDate1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="customerNo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[20170105]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopBranchNo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[with
+cust_main as (select a.CUST_NO,a.EFFECT_DATE,a.CUST_STATUS
+                from (select distinct CUST_NO,OPEN_DATE,EFFECT_DATE,CUST_STATUS
+                        from REPORT.COOP_CLIENT
+                      where BRANCH_MARK = 0 and FARE_RATIO <> 1 and $P!{branchNo}) a
+                inner join (select distinct CUST_NO,OPEN_DATE,EFFECT_DATE,CUST_STATUS
+                              from REPORT.COOP_CLIENT
+                            where BRANCH_MARK = 1 and FARE_RATIO > 0 and $P!{coopBranchNo}) b on a.CUST_NO=b.CUST_NO  and a.EFFECT_DATE=b.EFFECT_DATE and a.CUST_STATUS=b.CUST_STATUS
+              where a.OPEN_DATE between $P!{startDate} and $P!{endDate}
+                    and $P!{customerNo}),
+coop_list as (select CUST_NO,
+                     BRANCH_CODE,
+                     EFFECT_DATE,
+                     CUST_STATUS,
+                     FARE_RATIO as FARE_RATIO,
+                     ASSET_RATIO as ASSET_RATIO,
+                     AMOUNT_RATIO as AMOUNT_RATIO
+                from REPORT.COOP_CLIENT
+              where BRANCH_MARK = 1)
+select concat(concat(a.CUST_NO,' | '),a.CUST_NAME) as CUSTOMER,
+       b.NAME as BRANCH_NAME,
+       cust_main.EFFECT_DATE,
+       (case when cust_main.CUST_STATUS = 0 then '新增' else '变更' end) as CUST_STATUS,
+       round(cast(coalesce(a.FARE_RATIO,0) as decimal),4) as FARE_RATIO,
+       round(cast(coalesce(a.ASSET_RATIO,0) as decimal),4) as ASSET_RATIO,
+       round(cast(coalesce(a.AMOUNT_RATIO,0) as decimal),4) as AMOUNT_RATIO,
+       round(cast(coalesce((1-a.FARE_RATIO),0) as decimal),4) as COOP_FARE_RATIO_SUM,
+       round(cast(coalesce((1-a.ASSET_RATIO),0) as decimal),4) as COOP_ASSET_RATIO_SUM,
+       round(cast(coalesce((1-a.AMOUNT_RATIO),0) as decimal),4) as COOP_AMOUNT_RATIO_SUM,
+       coalesce(b1.NAME,'') as COOP_BRANCH_NAME,
+       '合作' as RELATION,
+       round(cast(coalesce(coop_list.FARE_RATIO,0) as decimal),4) as COOP_FARE_RATIO,
+       round(cast(coalesce(coop_list.ASSET_RATIO,0) as decimal),4) as COOP_ASSET_RATIO,
+       round(cast(coalesce(coop_list.AMOUNT_RATIO,0) as decimal),4) as COOP_AMOUNT_RATIO
+from cust_main
+left join coop_list on cust_main.CUST_NO=coop_list.CUST_NO
+and cust_main.EFFECT_DATE=coop_list.EFFECT_DATE
+and cust_main.CUST_STATUS=coop_list.CUST_STATUS
+left join REPORT.COOP_CLIENT a on cust_main.CUST_NO=a.CUST_NO
+and cust_main.EFFECT_DATE=a.EFFECT_DATE
+and cust_main.CUST_STATUS=a.CUST_STATUS
+left join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE=b.ID
+left join UF20_EDW.DIM_BRANCH b1 on coop_list.BRANCH_CODE=b1.ID
+where a.BRANCH_MARK = 0
+order by a.CUST_NO]]>
+	</queryString>
+	<field name="CUSTOMER" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUSTOMER"/>
+	</field>
+	<field name="BRANCH_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BRANCH_NAME"/>
+	</field>
+	<field name="EFFECT_DATE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="EFFECT_DATE"/>
+	</field>
+	<field name="CUST_STATUS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUST_STATUS"/>
+	</field>
+	<field name="FARE_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FARE_RATIO"/>
+	</field>
+	<field name="ASSET_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_RATIO"/>
+	</field>
+	<field name="AMOUNT_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="AMOUNT_RATIO"/>
+	</field>
+	<field name="COOP_FARE_RATIO_SUM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_FARE_RATIO_SUM"/>
+	</field>
+	<field name="COOP_ASSET_RATIO_SUM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_ASSET_RATIO_SUM"/>
+	</field>
+	<field name="COOP_AMOUNT_RATIO_SUM" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_AMOUNT_RATIO_SUM"/>
+	</field>
+	<field name="COOP_BRANCH_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_BRANCH_NAME"/>
+	</field>
+	<field name="RELATION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RELATION"/>
+	</field>
+	<field name="COOP_FARE_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_FARE_RATIO"/>
+	</field>
+	<field name="COOP_ASSET_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_ASSET_RATIO"/>
+	</field>
+	<field name="COOP_AMOUNT_RATIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="COOP_AMOUNT_RATIO"/>
+	</field>
+	<variable name="ROW_COUNT" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{ROW_COUNT}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</background>
+	<title>
+		<band height="20" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Title" mode="Opaque" x="0" y="0" width="1350" height="20" uuid="d3c0b581-3511-4a9e-90ab-35c5bbeda01b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="微软雅黑" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["合作开发客户报表 （"+$P{startDate}.toString()+" - "+$P{endDate}.toString()+" )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="150" y="0" width="120" height="40" uuid="05a672f1-fcdf-4164-9ea2-f89859f3789e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户营业部名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="50" y="0" width="100" height="40" uuid="080211bb-9451-4ebf-a4b3-a1757e473247">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[客户]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="270" y="0" width="80" height="40" uuid="925e64b6-51b5-49bd-82d2-93bc1f3fd449">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[生效日期]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="350" y="0" width="80" height="40" uuid="ade2cbcc-cefd-47fc-83d0-be62760a9801">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[状态]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="590" y="0" width="80" height="40" uuid="2aafabab-171b-4ef2-8375-7eaa04e8d265">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户营业部
+交易量比例]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="430" y="0" width="80" height="40" uuid="d5022895-790c-45ac-9c72-1628197257fd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户营业部
+佣金比例]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="510" y="0" width="80" height="40" uuid="a8973dda-6163-4f2f-8693-bfa849cc859f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[开户营业部
+资产比例]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="50" height="40" uuid="55b6ca95-6937-4072-b917-e0f3445daf66">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="910" y="0" width="120" height="40" uuid="a7f23d0b-4c3a-42b7-8ea6-0121c971bcb5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部名称]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="830" y="0" width="80" height="40" uuid="2f207a29-2a8e-46e9-9715-1cf9d8793ca5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+交易量比例总和]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="670" y="0" width="80" height="40" uuid="fe6f5dc4-dc1d-4554-906e-b64db10be9a4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+佣金比例总和]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="750" y="0" width="80" height="40" uuid="11c1f2b7-caad-4a26-bb94-323e54628369">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+资产比例总和]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1030" y="0" width="80" height="40" uuid="a654959d-9aa9-4343-ba9d-60a1db6ca464">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[关系]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" mode="Opaque" x="1270" y="0" width="80" height="40" uuid="b01edf07-4d09-49dd-a924-f7fe28415a4a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+交易量比例]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="1190" y="0" width="80" height="40" uuid="0ac6eb78-848c-4afb-9188-5f12eb536a80">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+资产比例]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Report_Header" stretchType="RelativeToTallestObject" mode="Opaque" x="1110" y="0" width="80" height="40" uuid="7109ef91-4ef5-4537-a9b9-960e4da017d3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[合作营业部
+佣金比例]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement style="Report_Detail" x="150" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="50" y="0" width="100" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUSTOMER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="270" y="0" width="80" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{EFFECT_DATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="350" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{CUST_STATUS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="590" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{AMOUNT_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="430" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FARE_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="510" y="0" width="80" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ASSET_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="a4cfbb76-df9e-417e-9c62-9fe50b66d04f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="910" y="0" width="120" height="15" uuid="8296ffa8-f687-40ce-8524-c608fc3f54ab">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="微软雅黑"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_BRANCH_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="830" y="0" width="80" height="15" uuid="804f6f00-7b6f-4f24-a882-620836fa482e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_AMOUNT_RATIO_SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="670" y="0" width="80" height="15" uuid="a42c1610-1184-483b-af77-8a7be9b5ccdd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_FARE_RATIO_SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="750" y="0" width="80" height="15" uuid="7f116195-88f7-4059-b588-233e3742f3cc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_ASSET_RATIO_SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="1270" y="0" width="80" height="15" uuid="a259e7ce-4f28-4ce1-9e4f-4f3cc26c9595">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_AMOUNT_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="1110" y="0" width="80" height="15" uuid="4e0f4860-6fc2-4076-9e6e-6fe692e08f5f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_FARE_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00%">
+				<reportElement style="Report_Detail" x="1190" y="0" width="80" height="15" uuid="df70cf3f-664d-448a-9080-860ddd28c1b1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{COOP_ASSET_RATIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Report_Detail" x="1030" y="0" width="80" height="15" uuid="079e0268-d75e-4ed8-af88-1669d324e653">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{RELATION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
