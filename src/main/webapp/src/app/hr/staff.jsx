@@ -75,7 +75,7 @@ export default class Hrstaff extends Component {
                     date:this.props.date.create_date,
                     formart:'YYYY',
                     addType:'month',
-                    addVal:-11
+                    addVal:-13
                 }),
             },
             end: {

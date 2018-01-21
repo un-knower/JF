@@ -26,9 +26,8 @@ public class MarketBranchServiceImpl implements MarketBranchService {
     private MarketBranchDao marketBranchDao;
 
     @Override
-    public List<MarketBranch> getMarketBranch(String endDate) {
+    public List<MarketBranch> getMarketBranch() {
         String sqlQuery = sqlQueryConfig.getSEL_MARKET_BRANCH_BY_MONTH();
-        sqlQuery = MessageFormat.format(sqlQuery, endDate);
         return marketBranchDao.selectMarketBranch(sqlQuery);
     }
 

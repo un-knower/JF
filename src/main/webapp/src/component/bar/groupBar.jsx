@@ -252,7 +252,7 @@ export default class GroupBar extends Component {
         this.chart.resize();
     }
     render(){
-        return (<JfCard title={this.state.title||''}>
+        return (<JfCard title={this.state.title||''} hasTip={this.props.hasTip}>
             <div className="markets_exponent_chart">
                 <div ref="chart" style={{width:'100%',height:'100%'}}></div>
             </div>

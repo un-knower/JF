@@ -396,6 +396,7 @@ class Table extends React.Component {
   }
 
   handleScrollX = (delta) => {
+    this.resizeScrollbarX = this.resizeScrollbarX + delta;
     this.handleWheel(delta, 0);
   }
   handleScrollY = (delta) => {

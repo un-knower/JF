@@ -391,9 +391,14 @@ export default class FilterController extends React.Component {
                  </Dropdown>;
                 break;
             case 'tagSelect':
+                //mode="tags"初始值设置为空的话，不要为空字符串，要为空数组[]
+                let tagSelectVal = this.state.controllerData[name];
+                if( tagSelectVal == undefined || tagSelectVal == '' ){
+                    tagSelectVal = [];
+                }
                 controller = <Select
                     mode="tags"
-                    value={this.state.controllerData[name]}
+                    value={tagSelectVal}
                     placeholder={config.placeholder}
                     style={{width:'100%'}}
                     onChange={(e)=>{this.onDataChange(name,e)}}
@@ -404,9 +409,14 @@ export default class FilterController extends React.Component {
                 </Select>
                 break;
             case 'customSelect':
+                //mode="tags"初始值设置为空的话，不要为空字符串，要为空数组[]
+                let customSelectVal = this.state.controllerData[name];
+                if( customSelectVal == undefined || customSelectVal == '' ){
+                    customSelectVal = [];
+                }
                 controller = <Select
                     mode="tags"
-                    value={this.state.controllerData[name]}
+                    value={customSelectVal}
                     placeholder={config.placeholder}
                     style={{width:'100%'}}
                     onChange={(e)=>{this.customSelectOnChange(name,e)}}
@@ -438,9 +448,14 @@ export default class FilterController extends React.Component {
             //     />
             //     break;
             case 'inputSelect':
+                //mode="tags"初始值设置为空的话，不要为空字符串，要为空数组[]
+                let inputSelectVal = this.state.controllerData[name];
+                if( inputSelectVal == undefined || inputSelectVal == '' ){
+                    inputSelectVal = [];
+                }
                 controller = <Select
                     mode="tags"
-                    value={this.state.controllerData[name]}
+                    value={inputSelectVal}
                     placeholder={config.placeholder}
                     style={{width:'100%'}}
                     onChange={(e)=>{this.onDataChange(name,e)}}

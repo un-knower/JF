@@ -323,11 +323,11 @@ public class DateUtil {
         Date date1 = null;
         try {
             date1 = DateUtil.parseDate(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         if (new Date().after(date1)) {
             return true;
+        }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return false;
     }

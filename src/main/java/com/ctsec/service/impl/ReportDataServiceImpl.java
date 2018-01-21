@@ -8,6 +8,7 @@ import com.ctsec.model.jf.ReportIndex;
 import com.ctsec.vo.ReportData;
 import com.ctsec.service.ReportDataService;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -261,7 +262,9 @@ public class ReportDataServiceImpl implements ReportDataService {
             String id_no = reportData.getId_no();
             Map<String, String> item = dataMap.get(id_no);
 
-            item.put("cust_status", reportData.getCust_status());
+            if (!StringUtils.equals(item.get("cust_status"), "正常")) {
+                item.put("cust_status", reportData.getCust_status());
+            }
 
             item.put("margin_trade_balance", df4.format((NumberUtils.toDouble(reportData.getMargin_trade_balance())
                     + (dataMap.get(id_no) == null ? 0d : NumberUtils.toDouble(dataMap.get(id_no).get("margin_trade_balance"))))));

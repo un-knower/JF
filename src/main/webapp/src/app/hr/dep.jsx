@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import ReactDOM from 'react-dom';
-import {Radio,Row,Col,message,Select} from 'antd';
+import {Radio,Row,Col,message,Select,Tooltip } from 'antd';
 import _ from 'underscore';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -359,7 +359,7 @@ export default class Hrdep extends Component {
                     },
                 ]
             };
-            console.log(seriesData);
+            // console.log(seriesData);
             this.refs.graph_ringpie.refreshGraph({seriesData,extraOption});
         });
     }
@@ -554,9 +554,9 @@ export default class Hrdep extends Component {
     }
     //职业资质对比
     renderGraphLinebars2(){
-        let {groupCode,startYear:startDate} = this.prevSendParams;
+        let {organizationType,startYear:startDate} = this.prevSendParams;
         let sfp = ['caitong_num','caitong_rate','org_rate'];
-        getDistrubiuition({groupCode,startDate},'careerDistrubiuition',sfp).then((res)=>{
+        getDistrubiuition({organizationType,startDate},'careerDistrubiuition',sfp).then((res)=>{
             const seriesData=[
                 {
                     name:'财通',
@@ -659,11 +659,14 @@ export default class Hrdep extends Component {
     }
     //MD-职级结构
     renderGraphNewBar2(){
-        let {groupCode,startYear:startDate} = this.prevSendParams;
+        let {organizationType,startYear:startDate} = this.prevSendParams;
         let sfp = ['rate','num'];
-        getDistrubiuition({groupCode,startDate},'mdDistrubiuition',sfp).then((res)=>{
+        getDistrubiuition({organizationType,startDate},'mdDistrubiuition',sfp).then((res)=>{
+            if(!res.rate){
+                res.rate = [];
+            }
             this.refs.graph_newbar2.refreshGraph({
-                seriesData:[{data:res.num}],
+                seriesData:[{data:res.num||[]}],
                 visualMapColor:['#6febff','#6febff'],
                 visualMap:true,
                 yAxisData:{data:res.xAxisData},
@@ -697,8 +700,8 @@ export default class Hrdep extends Component {
     }
     //专业资质结构
     renderGraphNewBar3(){
-        let {groupCode,startYear:startDate} = this.prevSendParams;
-        getDistrubiuition({groupCode,startDate},'proDistrubiuition').then((res)=>{
+        let {organizationType,startYear:startDate} = this.prevSendParams;
+        getDistrubiuition({organizationType,startDate},'proDistrubiuition').then((res)=>{
             this.refs.graph_newbar3.refreshGraph({
                 seriesData:[{data:res.map((item)=>(item.pro_cert_num))}],
                 visualMap:true,
@@ -744,7 +747,7 @@ export default class Hrdep extends Component {
 
     }
 
-    renderPage = async(commonControllers,includeTop10,flag) => {
+    renderPage = async(commonControllers,exceptGroupCode,flag) => {
         let sendParams = {};
         let _this = this;
         if (commonControllers) {
@@ -772,14 +775,20 @@ export default class Hrdep extends Component {
         _this.renderGraphNewBar1();
         //学历分布
         _this.renderGraphLinebars1();
-        //资质对比
-        _this.renderGraphLinebars2();
+
+
         _this.renderGraphConnectedBars();
-        if(includeTop10){
+        //groupCode改变后不刷新的图
+        if(exceptGroupCode){
+            //top10
             _this.renderGraphScatter();
+            //MD-职级结构
+            _this.renderGraphNewBar2();
+            //资质对比
+            _this.renderGraphLinebars2();
+            //专业资质结构
+            _this.renderGraphNewBar3();
         }
-        _this.renderGraphNewBar2();
-        _this.renderGraphNewBar3();
     }
 
 
@@ -866,7 +875,10 @@ export default class Hrdep extends Component {
                     </Row>
                 </PanelContainer>
 
-                <PanelContainer title='人员素质' >
+                <PanelContainer title='人员素质' className="dep_panel" >
+                    <Tooltip placement="topRight"  title="人员素质不与具体部门筛选联动">
+                        <i className="anticon anticon-info-circle dep_tooltop"></i>
+                   </Tooltip>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <div>

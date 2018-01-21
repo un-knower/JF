@@ -255,22 +255,22 @@ export default class Performanceprofile extends Component {
 
         this.DQRankPickerDeafult = {
             Y:{
-                startDate:this.defaultDateList[this.defaultDateList.length-1],
+                startDate:this.defaultDateList[5],
                 endDate:this.defaultDateList[0]
             },
             Q:{
-                startDate:this.defaultDateList[this.defaultDateList.length-1] + '1',
+                startDate:this.defaultDateList[2] + '1',
                 endDate:this.defaultDateList[0] + '4'
             },
             H:{
-                startDate:this.defaultDateList[this.defaultDateList.length-1] + '1',
+                startDate:this.defaultDateList[3] + '1',
                 endDate:this.defaultDateList[0] + '2'
             },
             M:{
                 startDate:Tools.getStartDefaultDate({
                     formart:'YYYY-MM',
                     addType:'months',
-                    addVal:-12
+                    addVal:-13
                 }),
                 endDate:Tools.getStartDefaultDate({
                     formart:'YYYY-MM',
@@ -371,6 +371,24 @@ export default class Performanceprofile extends Component {
                 data:data.xAxisData
             },
             extraOption:{
+                dataZoom:{
+                    backgroundColor: 'rgba(41,68,101,0.1)',
+                    handleColor: '#fff',
+                    fillerColor: 'rgba(101,148,208,0.6)',
+                    dataBackgroundColor: '#78aedc',
+
+                    height:20,
+                    left:60,
+                    right:60,
+                    bottom:'2%',
+                    textStyle:{
+                        color:'#fff',
+
+                    },
+                },
+                grid:{
+                    bottom:'18%'
+                },
                 tooltip:{
                     formatter:(params)=>{
                         if(params.seriesIndex===2){
@@ -418,6 +436,24 @@ export default class Performanceprofile extends Component {
                 data:data01.xAxisData
             },
             extraOption:{
+                dataZoom:{
+                    backgroundColor: 'rgba(41,68,101,0.1)',
+                    handleColor: '#fff',
+                    fillerColor: 'rgba(101,148,208,0.6)',
+                    dataBackgroundColor: '#78aedc',
+
+                    height:20,
+                    left:60,
+                    right:60,
+                    bottom:'2%',
+                    textStyle:{
+                        color:'#fff',
+
+                    },
+                },
+                grid:{
+                    bottom:'18%'
+                },
                 tooltip:{
                     formatter:(params)=>{
                         if(params.seriesIndex===2){

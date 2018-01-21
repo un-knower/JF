@@ -227,7 +227,7 @@ export default class Cooperatedevelop extends Component {
         if (obj.orderKey === undefined) {
             obj.orderKey = tableTitleList[0].field_name;
             obj.order = 'desc';
-            this.setState({sortColumn:tableTitleList[0].field_name,sortType:'desc'})
+            this.setState({sortColumn:tableTitleList[2].field_name,sortType:'desc'})
         }
         //校验为空,如果是第一次渲染，则不进行为空校验
         // if (this.checkFromNull(wrapSendParams,this.reportRenderTime[this.radioDefaultValue] === 0)) {
@@ -543,7 +543,7 @@ export default class Cooperatedevelop extends Component {
                     visible={this.state.moadlVisible}
                     footer={null}
                     onCancel={this.hideModal}
-                    width={1250}
+                    width={this.radioDefaultValue==='dev'?520:1250}
                 >
                     <div>
                         {

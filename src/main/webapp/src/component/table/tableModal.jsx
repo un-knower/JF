@@ -70,6 +70,9 @@ export default class TableModal extends Component{
         this.setState({tableData:nextProps.tableData,rank:nextProps.rank});
         this.endDate = nextProps.modalDate;
         this.modalSourceData = {};
+        let containerEle = this.refs.container;
+        let toSctoll = $(containerEle).find('.ant-table-body')[0];
+        toSctoll.scrollTop = toSctoll.scrollHeight*((this.props.rank-5)/(this.props.tableData.length||1));
     }
 
     async showModal(secuName) {
@@ -97,12 +100,6 @@ export default class TableModal extends Component{
         let containerEle = this.refs.container;
         //console.log(containerEle);
         //console.log(this.option);
-        let toSctoll = $(containerEle).find('.ant-table-body')[0];
-        toSctoll.scrollTop = toSctoll.scrollHeight*((this.props.rank-5)/(this.props.tableData.length||1));
-    }
-
-    componentDidUpdate(){
-        let containerEle = this.refs.container;
         let toSctoll = $(containerEle).find('.ant-table-body')[0];
         toSctoll.scrollTop = toSctoll.scrollHeight*((this.props.rank-5)/(this.props.tableData.length||1));
     }

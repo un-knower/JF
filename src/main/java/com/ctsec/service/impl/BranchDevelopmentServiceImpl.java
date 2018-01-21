@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by luchisheng on 2017/12/22.
@@ -100,6 +97,13 @@ public class BranchDevelopmentServiceImpl implements BranchDevelopmentService {
 
     private Map<String, Object> mapping01(List<BranchDevelopment> branchDevelopments, List<String> xAxisData, Map<String, Object> seriesData, List<String> valueNameList) {
 
+        Set<String> branchSet = new HashSet<>();
+
+        for (BranchDevelopment branchDevelopment: branchDevelopments) {
+            String branchName = branchDevelopment.getBranch_name();
+            branchSet.add(branchName);
+        }
+
         for (BranchDevelopment branchDevelopment: branchDevelopments) {
             String dateId = branchDevelopment.getInit_date();
             String yearId = branchDevelopment.getInit_year();
@@ -113,22 +117,29 @@ public class BranchDevelopmentServiceImpl implements BranchDevelopmentService {
                 xData = tradeYearId;
             else
                 xData = "";
-            List<HashedMap> value = new ArrayList<>();
+            Map<String, HashedMap> value = new HashMap<>();
             if (xAxisData.contains(xData)) {
-                value = (List<HashedMap>) seriesData.get(xData);
+                value = (Map<String, HashedMap>) seriesData.get(xData);
             }
             else {
                 xAxisData.add(xData);
+                for (String branch: branchSet)
+                   value.put(branch, new HashedMap());
             }
             HashedMap item = new HashedMap();
             for (String valueName: valueNameList) {
                 item.put(valueName, branchDevelopment.getByKey(valueName));
             }
-            value.add(item);
+
+            value.put(branchDevelopment.getBranch_name(), item);
             seriesData.put(xData, value);
         }
         Map<String, Object> result = new HashMap<>();
         result.put("xAxisData", xAxisData);
+        for ( Map.Entry<String, Object> entry: seriesData.entrySet()) {
+            Map<String, HashedMap> temp = (Map<String,HashedMap>) entry.getValue();
+            seriesData.put(entry.getKey(), new ArrayList<>(temp.values()));
+        }
         result.put("seriesData", seriesData);
         return result;
     }
@@ -268,6 +279,8 @@ public class BranchDevelopmentServiceImpl implements BranchDevelopmentService {
                     Boolean bool = false;
                     for (Object item: itemList) {
                         HashedMap hashedMap = (HashedMap) item;
+                        if (hashedMap.get("branch_name") == null)
+                            continue;
                         if (hashedMap.get("branch_name").toString().contains(orderList.get(i))) {
                             newItemMap.put(key , item);
                             bool = true;

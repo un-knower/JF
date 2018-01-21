@@ -348,7 +348,7 @@ where $P!{whereClause}]]>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement style="Report_Detail" x="290" y="0" width="80" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+				<reportElement style="Report_Detail" x="290" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -358,49 +358,49 @@ where $P!{whereClause}]]>
 				<textFieldExpression><![CDATA[$F{BANK_IN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="50" y="0" width="60" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+				<reportElement style="Report_Detail" x="50" y="0" width="60" height="15" isPrintWhenDetailOverflows="true" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="370" y="0" width="80" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+				<reportElement style="Report_Detail" x="370" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{BANK_OUT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="450" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+				<reportElement style="Report_Detail" x="450" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{BANK_SUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="770" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+				<reportElement style="Report_Detail" x="770" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{REVERSE_IN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="610" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+				<reportElement style="Report_Detail" x="610" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SECU_OUT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="690" y="0" width="80" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+				<reportElement style="Report_Detail" x="690" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SECU_SUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="a4cfbb76-df9e-417e-9c62-9fe50b66d04f">
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a4cfbb76-df9e-417e-9c62-9fe50b66d04f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -410,7 +410,7 @@ where $P!{whereClause}]]>
 				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1090" y="0" width="80" height="15" uuid="8296ffa8-f687-40ce-8524-c608fc3f54ab">
+				<reportElement style="Report_Detail" x="1090" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="8296ffa8-f687-40ce-8524-c608fc3f54ab">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -420,63 +420,63 @@ where $P!{whereClause}]]>
 				<textFieldExpression><![CDATA[$F{FIN_PRODUCT_OUT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1010" y="0" width="80" height="15" uuid="804f6f00-7b6f-4f24-a882-620836fa482e">
+				<reportElement style="Report_Detail" x="1010" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="804f6f00-7b6f-4f24-a882-620836fa482e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{FIN_PRODUCT_IN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="850" y="0" width="80" height="15" uuid="a42c1610-1184-483b-af77-8a7be9b5ccdd">
+				<reportElement style="Report_Detail" x="850" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="a42c1610-1184-483b-af77-8a7be9b5ccdd">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{REVERSE_OUT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="930" y="0" width="80" height="15" uuid="7f116195-88f7-4059-b588-233e3742f3cc">
+				<reportElement style="Report_Detail" x="930" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="7f116195-88f7-4059-b588-233e3742f3cc">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{REVERSE_SUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1250" y="0" width="80" height="15" uuid="4e0f4860-6fc2-4076-9e6e-6fe692e08f5f">
+				<reportElement style="Report_Detail" x="1250" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="4e0f4860-6fc2-4076-9e6e-6fe692e08f5f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OTHER_BUSINESS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1330" y="0" width="80" height="15" uuid="df70cf3f-664d-448a-9080-860ddd28c1b1">
+				<reportElement style="Report_Detail" x="1330" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="df70cf3f-664d-448a-9080-860ddd28c1b1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{NET_REDEMPTION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1170" y="0" width="80" height="15" uuid="079e0268-d75e-4ed8-af88-1669d324e653">
+				<reportElement style="Report_Detail" x="1170" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="079e0268-d75e-4ed8-af88-1669d324e653">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{FIN_PRODUCT_SUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="530" y="0" width="80" height="15" uuid="f80b98b4-1eac-401e-a048-f2e86ca4d4f8">
+				<reportElement style="Report_Detail" x="530" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="f80b98b4-1eac-401e-a048-f2e86ca4d4f8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SECU_IN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="110" y="0" width="60" height="15" uuid="364f6215-6b8c-4774-ae7b-ce091bf724aa">
+				<reportElement style="Report_Detail" x="110" y="0" width="60" height="15" isPrintWhenDetailOverflows="true" uuid="364f6215-6b8c-4774-ae7b-ce091bf724aa">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="170" y="0" width="120" height="15" uuid="066caef4-78ff-43e1-b823-34f17c780ccd">
+				<reportElement style="Report_Detail" x="170" y="0" width="120" height="15" isPrintWhenDetailOverflows="true" uuid="066caef4-78ff-43e1-b823-34f17c780ccd">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

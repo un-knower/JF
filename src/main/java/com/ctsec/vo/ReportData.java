@@ -1619,7 +1619,16 @@ public class ReportData {
      * 开放式基金佣金收入
      */
     private String open_fund_commission;
-
+    
+   /**
+    * 当日_其他佣金收入
+    */
+    private String other_commission;
+    /**
+     * 累计_其他佣金收入
+     */
+    private String all_other_commission;
+    
     public String getByKey(String key) {
         switch (key) {
             case"warrant_amount":
@@ -2264,6 +2273,10 @@ public class ReportData {
                 return this.getCommon_stock_commission();
             case"open_fund_commission":
                 return this.getOpen_fund_commission();
+            case"all_other_commission":
+                return this.getAll_other_commission();
+            case"other_commission":
+            	return this.getOther_commission();
         }
         return null;
     }
@@ -4843,4 +4856,21 @@ public class ReportData {
     public void setOpen_fund_commission(String open_fund_commission) {
         this.open_fund_commission = open_fund_commission;
     }
+
+	public String getAll_other_commission() {
+		return all_other_commission;
+	}
+
+	public void setAll_other_commission(String all_other_commission) {
+		this.all_other_commission = all_other_commission;
+	}
+
+	public String getOther_commission() {
+		return other_commission;
+	}
+
+	public void setOther_commission(String other_commission) {
+		this.other_commission = other_commission;
+	}
+    
 }

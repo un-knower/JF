@@ -11,18 +11,13 @@ provinceScatterName:[''] 省地图散点数据除经纬度外名称
 provinceScatterUnit:['']
 countryMapUnit:'',
 provinceMapUnit:''
-extraOptions:{
-    base:{},
-    countryOption:{},
-    provinceOption:{}
-}
 mapVisualColor:[] 地图颜色范围
 */
 class ConnectedMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            province:this.props.defaultProvince||'zhejiang',
+            province:this.props.defaultProvince||'浙江',
             title:this.props.title,
             loading:true
         };
@@ -126,8 +121,9 @@ class ConnectedMap extends React.Component {
                 _this.setCountryChartEvent();
         	}
         });
+        let provinceName = this.provinceNameMap[this.state.province];
         $.ajax({
-        	url:CONSTANTS.APP_BASE_URL+'/resources/lib/echarts/map/json/province/'+this.state.province+'.json',
+        	url:CONSTANTS.APP_BASE_URL+'/resources/lib/echarts/map/json/province/'+provinceName+'.json',
         	timeout: 10000,
         	success : function(areaJson){
               	echarts.registerMap(_this.state.province, areaJson);
@@ -135,6 +131,11 @@ class ConnectedMap extends React.Component {
         	}
         });
         this.setState({loading:false});
+    }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.defaultProvince){
+            this.setState({province:nextProps.defaultProvince})
+        }
     }
     prepareOption(params) {
         let _this = this;
@@ -179,6 +180,7 @@ class ConnectedMap extends React.Component {
                         show: false
                     }
                 },
+                roam:params.roamCountry,
                 data:params.countryData.data.map(function(item) {
                     return {
                         name:item.name,
@@ -203,7 +205,8 @@ class ConnectedMap extends React.Component {
             geo:{
                 roam:false,
                 map: 'china',
-                zoom:1.1
+                zoom:1.1,
+                roam:params.roamCountry,
             },
             visualMap:[{
                 type: 'continuous',
@@ -248,8 +251,10 @@ class ConnectedMap extends React.Component {
         this.provinceOption = {
             series:[{
                 type:'map',
+                roam:params.roamProvince,
                 map:this.state.province,
                 name:params.provinceData.name,
+                geoIndex:0,
                 data:params.provinceData.data.map(function(item) {
                     return {
                         ...item,
@@ -297,7 +302,8 @@ class ConnectedMap extends React.Component {
                 }
             },
             geo:{
-                map:this.state.province
+                map:this.state.province,
+                roam:params.roamProvince,
             },
             animation:false,
             visualMap:[{
@@ -349,6 +355,7 @@ class ConnectedMap extends React.Component {
                 _this.provinceChart.setOption({
                     series:[{
                         map:provinceName,
+                        center:null,
                         data:data.provinceData.data.map(function(item) {
                             return {
                                 ...item,
@@ -363,7 +370,8 @@ class ConnectedMap extends React.Component {
                         data:data.provinceScatterData
                     }],
                     geo:{
-                        map:provinceName
+                        map:provinceName,
+                        center:null
                     }
                 });
         	}
@@ -372,8 +380,8 @@ class ConnectedMap extends React.Component {
     render(){
         return (<JfCard title={this.state.title||''} loading={this.state.loading} hasTip={this.props.hasTip}>
             <div className="markets_exponent_chart">
-                <div ref="countryChart" style={{width:'55%',height:'95%',float:'left'}}></div>
-            <div ref="provinceChart" style={{width:'45%',height:'95%',float:'left'}}></div>
+                <div ref="countryChart"  className="kpi_business_map_left"></div>
+            <div ref="provinceChart"  className="kpi_business_map_right"></div>
             </div>
         </JfCard>);
     }

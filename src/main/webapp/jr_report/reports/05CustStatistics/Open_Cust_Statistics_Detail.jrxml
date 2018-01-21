@@ -234,13 +234,13 @@ order by a.BRANCH_CODE]]>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" isPrintWhenDetailOverflows="true" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -250,63 +250,63 @@ order by a.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OPEN_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OPEN_WAY}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{INNER_TRANS_MARK}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
+				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{LIMIT_SALE_MARK}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
+				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{REWARD_MARK}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" uuid="2cd3aa25-8f90-48bd-b273-716e2d33eb2e">
+				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="2cd3aa25-8f90-48bd-b273-716e2d33eb2e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{COOP_MARK}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="810" y="0" width="80" height="15" uuid="40525048-69f5-43b5-a758-3aa2aaf25800">
+				<reportElement style="Report_Detail" x="810" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="40525048-69f5-43b5-a758-3aa2aaf25800">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

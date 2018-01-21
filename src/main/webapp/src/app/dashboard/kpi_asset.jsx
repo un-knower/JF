@@ -569,17 +569,25 @@ export default class DashboardAsset extends Component {
                 )),
                 extraOption:{
                     dataZoom:[{
+                        backgroundColor: 'rgba(105,101,116,0.1)',
+                        handleColor: '#fff',
+                        fillerColor: 'rgba(105,101,116,.3)',
+                        dataBackgroundColor: 'rgba(131,126,145,0.5)',
                         textStyle:{
-                            color:'#9db7c0'
+                            color:'#fff'
                         },
-                        top:'94%',
-                        bottom:'1%',
+
+                        bottom:'2%',
                         height:17,
                         realtime:false
                     },{
+                        backgroundColor: 'rgba(105,101,116,0.1)',
+                        handleColor: '#fff',
+                        fillerColor: 'rgba(105,101,116,.3)',
+                        dataBackgroundColor: 'rgba(131,126,145,0.5)',
                         yAxisIndex:0,
                         textStyle:{
-                            color:'#9db7c0'
+                            color:'#fff'
                         },
                         width:17,
                         left:'95%',
@@ -604,8 +612,12 @@ export default class DashboardAsset extends Component {
                 dataUnit:['人','人','亿元'],
                 extraOption:{
                     dataZoom:[{
+                        backgroundColor: 'rgba(105,101,116,0.1)',
+                        handleColor: '#fff',
+                        fillerColor: 'rgba(105,101,116,.3)',
+                        dataBackgroundColor: 'rgba(131,126,145,0.5)',
                         textStyle:{
-                            color:'#9db7c0'
+                            color:'#fff'
                         },
                         height:17,
                         top:'94%',
@@ -613,8 +625,12 @@ export default class DashboardAsset extends Component {
                         realtime:false
                     },{
                         yAxisIndex:0,
+                        backgroundColor: 'rgba(105,101,116,0.1)',
+                        handleColor: '#fff',
+                        fillerColor: 'rgba(105,101,116,.3)',
+                        dataBackgroundColor: 'rgba(131,126,145,0.5)',
                         textStyle:{
-                            color:'#9db7c0'
+                            color:'#fff'
                         },
                         left:'95%',
                         width:17,

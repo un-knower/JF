@@ -39,6 +39,28 @@
 .market_height .markets_exponent_line{
     height: 200px;
 }
+.market_height .card_layout_module .ant-card-head .ant-card-head-title{
+    text-align: left
+}
+.market_height .anticon.anticon-arrows-alt,.business_height .anticon.anticon-arrows-alt,.market_modal_5 .anticon.anticon-arrows-alt{
+    position: absolute;
+    right: 19px;
+    text-align: right;
+    top: 24px;
+    color: #b7b7b7;
+    cursor: pointer;
+    font-size: 13px;
+}
+.market_modal_5 .anticon.anticon-arrows-alt{
+    top:-26px;right: 13px;
+}
+.market_modal_l, .market_modal_r{
+    float: left;width: 100%;
+    height: 50%;
+}
+.business_height .anticon.anticon-arrows-alt{
+    top: 15px;
+}
 .business_sort{
     text-align: left;
     padding: 8px 10px;

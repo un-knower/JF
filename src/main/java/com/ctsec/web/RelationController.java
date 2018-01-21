@@ -346,7 +346,7 @@ public class RelationController {
     @ResponseBody
     @RequestMapping(value = "/export", method = {RequestMethod.GET})
     public String export(
-            String startDate, String endDate, String idNo, String queryType,
+            String exportType, String startDate, String endDate, String idNo, String queryType,
             HttpServletResponse response
     ) {
         StringBuilder paramIdNo;
@@ -358,38 +358,9 @@ public class RelationController {
             reportData.setStock_commission_rate(reportData.getStock_commission_rate() + "‰");
         String fileName = "关联方证券经纪业务情况表";
         String title = "关联方证券经纪业务情况表" + "(" + startDate + "-" + endDate + ")";
-        String[] titles = {"客户姓名","身份证号/营业执照号","账户状态","股票佣金率(‰)","融资融券余额(元)","融资融券息费收入(元)","普通股票佣金收入(元)","开放式基金佣金收入(元)"};
+        String[] titles = {"序号", "客户姓名","身份证号/营业执照号","账户状态","股票佣金率(‰)","融资融券余额(元)","融资融券息费收入(元)","普通股票佣金收入(元)","开放式基金佣金收入(元)"};
         String msg = ExportUtil.exportExcel(response, fileName, title, titles , mappingData);
         return JsonResult.successJson(msg);
-    }
-
-    @ApiOperation(value = "导出关联方查询报表", notes = "导出关联方查询报表", produces = "application/json")
-    @ResponseBody
-    @RequestMapping(value = "/exportPdf", method = {RequestMethod.GET})
-    public String exportPdf(
-            String startDate, String endDate, String idNo, String queryType,
-            HttpServletResponse response
-    ) {
-        StringBuilder paramIdNo;
-        paramIdNo = new StringBuilder("'" + idNo.replaceAll(",", "','") + "'");
-        List<RelationItem> relationItemList = relationService.getItemByCode(paramIdNo.toString());
-        List<ReportData> queryResult = reportDataService.getReportData19(startDate, endDate, paramIdNo.toString());
-        List<ReportData> mappingData = reportDataService.getMappingData19(queryResult, relationItemList, queryType);
-        for (ReportData reportData: mappingData)
-            reportData.setStock_commission_rate(reportData.getStock_commission_rate() + "‰");
-        String[] titles = {"客户姓名","身份证号/营业执照号","账户状态","股票佣金率(‰)","融资融券余额(元)","融资融券息费收入(元)","普通股票佣金收入(元)","开放式基金佣金收入(元)"};
-//        String msg = ExportUtil.exportExcel(response, "关联方证券经纪业务情况表", titles , mappingData);
-        Document document = new Document();
-        try{
-            response.setContentType("application/pdf");
-            PdfWriter.getInstance(document, response.getOutputStream());
-            document.open();
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        document.close();
-        return JsonResult.successJson("");
     }
 
 }

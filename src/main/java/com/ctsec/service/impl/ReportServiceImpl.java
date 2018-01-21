@@ -76,15 +76,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport01(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report01";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("01")).getLast_build_date().replaceAll("-", ""), "D")
@@ -122,10 +113,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", toDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -139,14 +126,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport02(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report02";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("02")).getLast_build_date().replaceAll("-", ""), "D")
@@ -179,10 +158,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -197,15 +172,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport03(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report03";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("03")).getReal_last_build_date().replaceAll("-", ""), "W")
@@ -241,10 +207,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", toDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -258,15 +220,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport04(ApiParams apiParams) {
-
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report04";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("04")).getReal_last_build_date().replaceAll("-", ""), "M").substring(0,6)
@@ -297,10 +250,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -314,14 +263,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport05(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report05";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("05")).getLast_build_date().replaceAll("-", ""), "Y").substring(0,4)
@@ -352,10 +293,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -370,15 +307,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport06(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report06";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("06")).getLast_build_date().replaceAll("-", ""), "D")
@@ -414,10 +342,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", toDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -431,14 +355,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport07(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report07";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("07")).getLast_build_date().replaceAll("-", ""), "D")
@@ -469,10 +385,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -486,15 +398,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport08(ApiParams apiParams) {
-
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report08";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("08")).getReal_last_build_date().replaceAll("-", ""), "M").substring(0,6)
@@ -525,10 +428,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -552,20 +451,6 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String getReport09(ApiParams apiParams) {
 
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getStartDate1() == null || apiParams.getStartDate1().equals(""))
-                && (apiParams.getEndDate1() == null || apiParams.getEndDate1().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))
-                && (apiParams.getCoopBranchId() == null || apiParams.getCoopBranchId().equals("") || apiParams.getCoopBranchId().equals("1000"))
-                && (apiParams.getCustomerNo() == null || apiParams.getCustomerNo().equals(""))) {
-            redisKey = "jf-" + "api/report" + "/report09";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
-
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("09")).getLast_build_date().replaceAll("-", ""), "D")
                 : apiParams.getEndDate();
@@ -573,10 +458,10 @@ public class ReportServiceImpl implements ReportService {
                 ? toDate
                 : apiParams.getStartDate();
         String toDate1 = apiParams.getEndDate1() == null || apiParams.getEndDate1().equals("")
-                ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("09")).getReal_last_build_date().replaceAll("-", ""), "W")
+                ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("09")).getLast_build_date().replaceAll("-", ""), "D")
                 : apiParams.getEndDate1();
         String fromDate1 = apiParams.getStartDate1() == null || apiParams.getStartDate1().equals("")
-                ? paramDateService.getReportFromDay(toDate1, "W")
+                ? "19900101"
                 : apiParams.getStartDate1();
 
         String branchId;
@@ -637,7 +522,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> queryResult = reportDataService.getReportData09(paramBranchIds, paramCoopBranchIds, otherParams, fromDate, toDate);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(queryResult, orderKey, order);
         }
         else {
@@ -656,10 +541,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("startDate1", fromDate1);
         params.put("endDate1", toDate1);
         result.put("params", params);
-
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
 
         return JsonResult.successJson(result);
     }
@@ -682,23 +563,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String getReport10(ApiParams apiParams) {
 
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))
-                && (apiParams.getCoopBranchId() == null || apiParams.getCoopBranchId().equals("") || apiParams.getCoopBranchId().equals("1000"))
-                && (apiParams.getCustomerNo() == null || apiParams.getCustomerNo().equals(""))) {
-            redisKey = "jf-" + "api/report" + "/report10";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
-
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("10")).getLast_build_date().replaceAll("-", ""), "D")
                 : apiParams.getEndDate();
         String fromDate = apiParams.getStartDate() == null || apiParams.getStartDate().equals("")
-                ? toDate
+                ? "19900101"
                 : apiParams.getStartDate();
 
         String branchId;
@@ -759,7 +628,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> mappingResult = reportDataService.getMappingData10(queryResult);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(mappingResult, orderKey, order);
         }
         else {
@@ -776,10 +645,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("startDate", fromDate);
         params.put("endDate", toDate);
         result.put("params", params);
-
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
 
         return JsonResult.successJson(result);
     }
@@ -803,17 +668,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport11(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))
-                && (apiParams.getExchangeType() == null || apiParams.getExchangeType().equals("") || apiParams.getExchangeType().equals("1,2,9"))
-                && (apiParams.getCustomerNo() == null || apiParams.getCustomerNo().equals(""))) {
-            redisKey = "jf-" + "api/report" + "/report11";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("11")).getLast_build_date().replaceAll("-", ""), "D")
@@ -884,7 +738,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> queryResult = reportDataService.getReportData11(fromDate, toDate, paramBranchIds, paramExchangeTypes, otherParams);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(queryResult, orderKey, order);
         }
         else {
@@ -901,10 +755,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("startDate", fromDate);
         params.put("endDate", toDate);
         result.put("params", params);
-
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
 
         return JsonResult.successJson(result);
     }
@@ -930,21 +780,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport12(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getStartDate1() == null || apiParams.getStartDate1().equals(""))
-                && (apiParams.getEndDate1() == null || apiParams.getEndDate1().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))
-                && (apiParams.getExchangeType() == null || apiParams.getExchangeType().equals("") || apiParams.getExchangeType().equals("1,2,9"))
-                && (apiParams.getCustomerNo() == null || apiParams.getCustomerNo().equals(""))
-                && (apiParams.getStockAccount() == null || apiParams.getStockAccount().equals(""))
-                && (apiParams.getSecuCode() == null || apiParams.getSecuCode().equals(""))) {
-            redisKey = "jf-" + "api/report" + "/report12";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("12")).getLast_build_date().replaceAll("-", ""), "D")
@@ -956,7 +791,7 @@ public class ReportServiceImpl implements ReportService {
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("12")).getReal_last_build_date().replaceAll("-", ""), "W")
                 : apiParams.getEndDate1();
         String fromDate1 = apiParams.getStartDate1() == null || apiParams.getStartDate1().equals("")
-                ? paramDateService.getReportFromDay(toDate1, "W")
+                ? "19900101"
                 : apiParams.getStartDate1();
 
         String branchId;
@@ -1021,7 +856,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> queryResult = reportDataService.getReportData12(fromDate, toDate, paramBranchIds, paramExchangeTypes, otherParams);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(queryResult, orderKey, order);
         }
         else {
@@ -1041,10 +876,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate1", toDate1);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -1059,15 +890,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport13(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report13";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("13")).getLast_build_date().replaceAll("-", ""), "D")
@@ -1103,10 +925,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", toDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -1125,15 +943,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport1301(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report1301";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("1301")).getLast_build_date().replaceAll("-", ""), "D")
@@ -1176,7 +985,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> queryResult = reportDataService.getReportData1301(fromDate, toDate, paramBranchIds);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(queryResult, orderKey, order);
         }
         else {
@@ -1194,10 +1003,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", toDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -1212,15 +1017,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport14(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))
-                && (apiParams.getAssetSection() == null || apiParams.getAssetSection().equals("") || apiParams.getAssetSection().equals("1,2,3,4,5,6,7,8,9"))) {
-            redisKey = "jf-" + "api/report" + "/report14";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String endDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("14")).getReal_last_build_date().replaceAll("-", ""), "M").substring(0,6)
@@ -1254,10 +1050,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("endDate", endDate);
         result.put("params", params);
 
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
-
         return JsonResult.successJson(result);
     }
 
@@ -1272,15 +1064,6 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public String getReport15(ApiParams apiParams) {
-        String redisKey = "";
-        if ((apiParams.getStartDate() == null || apiParams.getStartDate().equals(""))
-                && (apiParams.getEndDate() == null || apiParams.getEndDate().equals(""))
-                && (apiParams.getBranchId() == null || apiParams.getBranchId().equals("") || apiParams.getBranchId().equals("1000"))) {
-            redisKey = "jf-" + "api/report" + "/report15";
-            String jedisResult = jedisService.getJedisResult(redisKey);
-            if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
-                return jedisResult;
-        }
 
         String toDate = apiParams.getEndDate() == null || apiParams.getEndDate().equals("")
                 ? paramDateService.getReportPreTradingDay(cubeInfoService.getByCube(clearDateMap.get("15")).getLast_build_date().replaceAll("-", ""), "D")
@@ -1315,10 +1098,6 @@ public class ReportServiceImpl implements ReportService {
         params.put("startDate", fromDate);
         params.put("endDate", toDate);
         result.put("params", params);
-
-        if (!redisKey.equals("")) {
-            jedisService.setJedisResult(redisKey, JsonResult.successJson(result), 24 * 60 * 60);
-        }
 
         return JsonResult.successJson(result);
     }
@@ -1368,7 +1147,7 @@ public class ReportServiceImpl implements ReportService {
         List<ReportData> queryResult = reportDataService.getReportData16(fromDate, toDate, paramProdCode);
 
         List<ReportData> orderedResult;
-        if (!orderKey.equals("") && !orderKey.equals("")) {
+        if (!orderKey.equals("") && !order.equals("")) {
             orderedResult = reportDataService.getOrderedData(queryResult, orderKey, order);
         }
         else {

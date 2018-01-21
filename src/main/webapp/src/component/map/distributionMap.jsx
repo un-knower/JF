@@ -304,7 +304,7 @@ export default class DistributionMap extends React.Component {
         return (<JfCard title={this.state.title||''}>
             <div className="markets_exponent_chart">
                 <div ref="countryChart" style={{width:'55%',height:'95%',float:'left'}}></div>
-            <div ref="provinceChart" style={{width:'45%',height:'90%',float:'left'}} className="map_sj_right"></div>
+            <div ref="provinceChart" style={{width:'45%',height:'90%',float:'left',marginTop:'-20px'}} className="map_sj_right"></div>
             </div>
         </JfCard>);
     }

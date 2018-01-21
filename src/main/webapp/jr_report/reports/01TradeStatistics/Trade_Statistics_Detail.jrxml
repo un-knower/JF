@@ -164,7 +164,8 @@ select  BRANCH_CODE,
         sum(HK_COMMISSION) as HK_COMMISSION_Y,
         sum(HK_OPEN_CUST_NUM) as HK_OPEN_CUST_NUM_Y
 from REPORT.TRADE_STATISTICS_DETAIL a
-where a.init_date between ($P!{endDate}/10000*10000+101) and $P!{endDate} and $P!{branchNo}
+inner join UF20_EDW.DIM_DATE b on a.INIT_DATE=b.DAY_ID
+where b.YEAR_ID = '$P!{yearId}' and $P!{branchNo}
 group by BRANCH_CODE),
 period_close as (
 select  BRANCH_CODE,
@@ -183,7 +184,7 @@ select  BRANCH_CODE,
         ASSURE_BALANCE as ASSURE_BALANCE_CLOSE_Y,
         DEBIT_BALANCE  as DEBIT_BALANCE_CLOSE_Y
 from REPORT.TRADE_STATISTICS_DETAIL
-where INIT_DATE = $P!{endDate}),
+where INIT_DATE = (select max(INIT_DATE) from REPORT.TRADE_STATISTICS_DETAIL)),
 total_cust as (
 select BRANCH_CODE,
        sum(OPEN_CUST_NUM) as OPEN_CUST_NUM_TOTAL
@@ -1294,13 +1295,13 @@ order by year_main.BRANCH_CODE]]>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" isPrintWhenDetailOverflows="true" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -1310,7 +1311,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="170" y="0" width="50" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+				<reportElement style="Report_Detail" x="170" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "002" )]]></printWhenExpression>
@@ -1318,7 +1319,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="220" y="0" width="50" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+				<reportElement style="Report_Detail" x="220" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "003" )]]></printWhenExpression>
@@ -1326,7 +1327,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="270" y="0" width="50" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+				<reportElement style="Report_Detail" x="270" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "004" )]]></printWhenExpression>
@@ -1334,7 +1335,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{WARRANT_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="320" y="0" width="50" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+				<reportElement style="Report_Detail" x="320" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "005" )]]></printWhenExpression>
@@ -1342,7 +1343,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="370" y="0" width="50" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+				<reportElement style="Report_Detail" x="370" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "006" )]]></printWhenExpression>
@@ -1350,7 +1351,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_MARKET_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="420" y="0" width="50" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+				<reportElement style="Report_Detail" x="420" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "007" )]]></printWhenExpression>
@@ -1358,7 +1359,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="470" y="0" width="50" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+				<reportElement style="Report_Detail" x="470" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "008" )]]></printWhenExpression>
@@ -1366,7 +1367,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_MARKET_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="520" y="0" width="50" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+				<reportElement style="Report_Detail" x="520" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "009" )]]></printWhenExpression>
@@ -1374,7 +1375,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="570" y="0" width="50" height="15" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
+				<reportElement style="Report_Detail" x="570" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "010" )]]></printWhenExpression>
@@ -1382,7 +1383,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="620" y="0" width="50" height="15" uuid="589f0e50-d241-47ea-bf05-aec0e9d56c7d">
+				<reportElement style="Report_Detail" x="620" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="589f0e50-d241-47ea-bf05-aec0e9d56c7d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "011" )]]></printWhenExpression>
@@ -1390,7 +1391,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="670" y="0" width="50" height="15" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
+				<reportElement style="Report_Detail" x="670" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "012" )]]></printWhenExpression>
@@ -1398,7 +1399,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_BALANCE_AVG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="720" y="0" width="50" height="15" uuid="a7d1da09-1b5d-45ac-996e-ebbedbc3e494">
+				<reportElement style="Report_Detail" x="720" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a7d1da09-1b5d-45ac-996e-ebbedbc3e494">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "013" )]]></printWhenExpression>
@@ -1406,7 +1407,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_AVG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="770" y="0" width="50" height="15" uuid="51f9093f-a111-49e4-974b-997e483f66ad">
+				<reportElement style="Report_Detail" x="770" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="51f9093f-a111-49e4-974b-997e483f66ad">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "014" )]]></printWhenExpression>
@@ -1414,7 +1415,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_AVG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="820" y="0" width="50" height="15" uuid="842965e1-0f9f-4673-9cb6-47772df6f164">
+				<reportElement style="Report_Detail" x="820" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="842965e1-0f9f-4673-9cb6-47772df6f164">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "015" )]]></printWhenExpression>
@@ -1422,7 +1423,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_BALANCE_CLOSE_P}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="870" y="0" width="50" height="15" uuid="a08f1c5e-0ae0-414a-ae4c-70f47f802c7a">
+				<reportElement style="Report_Detail" x="870" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a08f1c5e-0ae0-414a-ae4c-70f47f802c7a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "016" )]]></printWhenExpression>
@@ -1430,7 +1431,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_CLOSE_P}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="920" y="0" width="50" height="15" uuid="1e770b80-dc1a-41e6-97ab-43e6fe1a2f8b">
+				<reportElement style="Report_Detail" x="920" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="1e770b80-dc1a-41e6-97ab-43e6fe1a2f8b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "017" )]]></printWhenExpression>
@@ -1438,7 +1439,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_CLOSE_P}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="970" y="0" width="50" height="15" uuid="0d903170-c34c-4729-a675-86410f549cb1">
+				<reportElement style="Report_Detail" x="970" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="0d903170-c34c-4729-a675-86410f549cb1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "018" )]]></printWhenExpression>
@@ -1446,7 +1447,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1020" y="0" width="50" height="15" uuid="d9114e55-0f93-4859-874b-24c522f4f08e">
+				<reportElement style="Report_Detail" x="1020" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="d9114e55-0f93-4859-874b-24c522f4f08e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "019" )]]></printWhenExpression>
@@ -1454,7 +1455,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1070" y="0" width="50" height="15" uuid="bedba275-aa56-44b4-94b1-f9db37332e33">
+				<reportElement style="Report_Detail" x="1070" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="bedba275-aa56-44b4-94b1-f9db37332e33">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "020" )]]></printWhenExpression>
@@ -1462,7 +1463,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{WARRANT_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1120" y="0" width="50" height="15" uuid="27bd895c-c15a-4cc1-a507-5ec1ca754ce3">
+				<reportElement style="Report_Detail" x="1120" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="27bd895c-c15a-4cc1-a507-5ec1ca754ce3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "021" )]]></printWhenExpression>
@@ -1470,7 +1471,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1170" y="0" width="50" height="15" uuid="45b87f30-e97b-4294-8106-960203c03c6d">
+				<reportElement style="Report_Detail" x="1170" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="45b87f30-e97b-4294-8106-960203c03c6d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "022" )]]></printWhenExpression>
@@ -1478,7 +1479,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_MARKET_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1220" y="0" width="50" height="15" uuid="7db4a5e4-21ed-4d29-b8e3-812e6d13c9b9">
+				<reportElement style="Report_Detail" x="1220" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="7db4a5e4-21ed-4d29-b8e3-812e6d13c9b9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "023" )]]></printWhenExpression>
@@ -1486,7 +1487,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1270" y="0" width="50" height="15" uuid="531ac0ed-74dc-4968-937a-07ee4f4d283c">
+				<reportElement style="Report_Detail" x="1270" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="531ac0ed-74dc-4968-937a-07ee4f4d283c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "024" )]]></printWhenExpression>
@@ -1494,7 +1495,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_MARKET_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1320" y="0" width="50" height="15" uuid="99729822-d75a-483e-88b3-dc67fa5cea2e">
+				<reportElement style="Report_Detail" x="1320" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="99729822-d75a-483e-88b3-dc67fa5cea2e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "025" )]]></printWhenExpression>
@@ -1502,7 +1503,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1370" y="0" width="50" height="15" uuid="2d85dd06-3576-4ac2-bbc8-471cdd09031b">
+				<reportElement style="Report_Detail" x="1370" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="2d85dd06-3576-4ac2-bbc8-471cdd09031b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "026" )]]></printWhenExpression>
@@ -1510,7 +1511,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1420" y="0" width="50" height="15" uuid="22faf5e9-66ea-4e01-9c06-92e7b7180e31">
+				<reportElement style="Report_Detail" x="1420" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="22faf5e9-66ea-4e01-9c06-92e7b7180e31">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "027" )]]></printWhenExpression>
@@ -1518,7 +1519,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1470" y="0" width="50" height="15" uuid="9a8baadf-7da0-4bc2-ab78-558949223b29">
+				<reportElement style="Report_Detail" x="1470" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="9a8baadf-7da0-4bc2-ab78-558949223b29">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "028" )]]></printWhenExpression>
@@ -1526,7 +1527,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_BALANCE_AVG_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1520" y="0" width="50" height="15" uuid="ca943cb3-6284-4363-8ab1-466a64d8f302">
+				<reportElement style="Report_Detail" x="1520" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="ca943cb3-6284-4363-8ab1-466a64d8f302">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "029" )]]></printWhenExpression>
@@ -1534,7 +1535,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_AVG_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1570" y="0" width="50" height="15" uuid="16c15c16-3718-4813-9cee-170200d95e74">
+				<reportElement style="Report_Detail" x="1570" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="16c15c16-3718-4813-9cee-170200d95e74">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "030" )]]></printWhenExpression>
@@ -1542,7 +1543,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_AVG_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1620" y="0" width="50" height="15" uuid="2664f5dd-ef46-4428-a413-fb821a3a6c17">
+				<reportElement style="Report_Detail" x="1620" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="2664f5dd-ef46-4428-a413-fb821a3a6c17">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "031" )]]></printWhenExpression>
@@ -1550,7 +1551,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{FUND_BALANCE_CLOSE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1670" y="0" width="50" height="15" uuid="e68b272c-f45d-4318-8a35-17a79dd5d92f">
+				<reportElement style="Report_Detail" x="1670" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="e68b272c-f45d-4318-8a35-17a79dd5d92f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "032" )]]></printWhenExpression>
@@ -1558,7 +1559,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_BALANCE_CLOSE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1720" y="0" width="50" height="15" uuid="a4146f77-81b0-485a-8c7e-8312561c80f0">
+				<reportElement style="Report_Detail" x="1720" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a4146f77-81b0-485a-8c7e-8312561c80f0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "033" )]]></printWhenExpression>
@@ -1566,7 +1567,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSET_BALANCE_CLOSE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1770" y="0" width="50" height="15" uuid="687913ec-679e-48ff-a255-7817a5f6f4d1">
+				<reportElement style="Report_Detail" x="1770" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="687913ec-679e-48ff-a255-7817a5f6f4d1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "034" )]]></printWhenExpression>
@@ -1574,7 +1575,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{OPEN_CUST_NUM_TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1820" y="0" width="50" height="15" uuid="434a363e-1059-4798-a0cc-eb28e0b8b322">
+				<reportElement style="Report_Detail" x="1820" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="434a363e-1059-4798-a0cc-eb28e0b8b322">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "035" )]]></printWhenExpression>
@@ -1582,7 +1583,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{B_STOCK_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1870" y="0" width="50" height="15" uuid="83cc28c7-76b4-402f-8ba8-2cc055cbd6c2">
+				<reportElement style="Report_Detail" x="1870" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="83cc28c7-76b4-402f-8ba8-2cc055cbd6c2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "036" )]]></printWhenExpression>
@@ -1590,7 +1591,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{B_STOCK_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1920" y="0" width="50" height="15" uuid="7daccc7d-7ebd-4a5c-811f-f6f0bd907f92">
+				<reportElement style="Report_Detail" x="1920" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="7daccc7d-7ebd-4a5c-811f-f6f0bd907f92">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "037" )]]></printWhenExpression>
@@ -1598,7 +1599,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1970" y="0" width="50" height="15" uuid="1bffa3af-32f8-46fc-bf87-eb7768387220">
+				<reportElement style="Report_Detail" x="1970" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="1bffa3af-32f8-46fc-bf87-eb7768387220">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "038" )]]></printWhenExpression>
@@ -1606,7 +1607,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2020" y="0" width="50" height="15" uuid="7e77c659-6580-4e2e-acc9-679b234c47e9">
+				<reportElement style="Report_Detail" x="2020" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="7e77c659-6580-4e2e-acc9-679b234c47e9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "039" )]]></printWhenExpression>
@@ -1614,7 +1615,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{NET_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2070" y="0" width="50" height="15" uuid="c7392a6b-1997-43f3-a26b-bb3011ed7321">
+				<reportElement style="Report_Detail" x="2070" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="c7392a6b-1997-43f3-a26b-bb3011ed7321">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "040" )]]></printWhenExpression>
@@ -1622,7 +1623,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{NET_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2120" y="0" width="50" height="15" uuid="e3639f34-5256-4474-9adc-9feaff53e673">
+				<reportElement style="Report_Detail" x="2120" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="e3639f34-5256-4474-9adc-9feaff53e673">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "041" )]]></printWhenExpression>
@@ -1630,7 +1631,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2170" y="0" width="50" height="15" uuid="09b48113-6338-49d5-9367-8d7b06a58327">
+				<reportElement style="Report_Detail" x="2170" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="09b48113-6338-49d5-9367-8d7b06a58327">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "042" )]]></printWhenExpression>
@@ -1638,7 +1639,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2220" y="0" width="50" height="15" uuid="b1e6132f-35ee-45ff-8e07-61ec47743e60">
+				<reportElement style="Report_Detail" x="2220" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="b1e6132f-35ee-45ff-8e07-61ec47743e60">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "043" )]]></printWhenExpression>
@@ -1646,7 +1647,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_NET_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2270" y="0" width="50" height="15" uuid="6e74eec1-fe1c-4cdd-8d85-49d929f4d781">
+				<reportElement style="Report_Detail" x="2270" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="6e74eec1-fe1c-4cdd-8d85-49d929f4d781">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "044" )]]></printWhenExpression>
@@ -1654,7 +1655,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2320" y="0" width="50" height="15" uuid="a4486f88-70cb-4b81-a09e-7ba8b0fb8b9b">
+				<reportElement style="Report_Detail" x="2320" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a4486f88-70cb-4b81-a09e-7ba8b0fb8b9b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "045" )]]></printWhenExpression>
@@ -1662,7 +1663,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2370" y="0" width="50" height="15" uuid="b1279838-c36a-4649-82dc-4cf7feb58414">
+				<reportElement style="Report_Detail" x="2370" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="b1279838-c36a-4649-82dc-4cf7feb58414">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "046" )]]></printWhenExpression>
@@ -1670,7 +1671,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_NET_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2420" y="0" width="50" height="15" uuid="7aee8cad-0d6d-4152-8cee-e91ec59316ae">
+				<reportElement style="Report_Detail" x="2420" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="7aee8cad-0d6d-4152-8cee-e91ec59316ae">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "047" )]]></printWhenExpression>
@@ -1678,7 +1679,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_CLOSE_P}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2470" y="0" width="50" height="15" uuid="fbacbcaf-34fa-4878-a84b-372d227b84ac">
+				<reportElement style="Report_Detail" x="2470" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="fbacbcaf-34fa-4878-a84b-372d227b84ac">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "048" )]]></printWhenExpression>
@@ -1686,7 +1687,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_CLOSE_P}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2520" y="0" width="50" height="15" uuid="32d8e42c-40ff-433f-9e2c-63e49d0cc51e">
+				<reportElement style="Report_Detail" x="2520" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="32d8e42c-40ff-433f-9e2c-63e49d0cc51e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "049" )]]></printWhenExpression>
@@ -1694,7 +1695,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2570" y="0" width="50" height="15" uuid="5f729804-3c26-4657-9fc0-a7e31fbc0693">
+				<reportElement style="Report_Detail" x="2570" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="5f729804-3c26-4657-9fc0-a7e31fbc0693">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "050" )]]></printWhenExpression>
@@ -1702,7 +1703,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2620" y="0" width="50" height="15" uuid="33e2d611-fe2f-4244-be05-a39c46f7da29">
+				<reportElement style="Report_Detail" x="2620" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="33e2d611-fe2f-4244-be05-a39c46f7da29">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "051" )]]></printWhenExpression>
@@ -1710,7 +1711,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{CREDIT_NET_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2670" y="0" width="50" height="15" uuid="e5e452f7-9bf6-4de9-9cd7-c831ab007bb2">
+				<reportElement style="Report_Detail" x="2670" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="e5e452f7-9bf6-4de9-9cd7-c831ab007bb2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "052" )]]></printWhenExpression>
@@ -1718,7 +1719,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2720" y="0" width="50" height="15" uuid="63e51fdc-2aae-4ac2-b2e7-9f617d3e345e">
+				<reportElement style="Report_Detail" x="2720" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="63e51fdc-2aae-4ac2-b2e7-9f617d3e345e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "053" )]]></printWhenExpression>
@@ -1726,7 +1727,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2770" y="0" width="50" height="15" uuid="7f2c5b0b-987b-4548-beda-15b023e5cbb8">
+				<reportElement style="Report_Detail" x="2770" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="7f2c5b0b-987b-4548-beda-15b023e5cbb8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "054" )]]></printWhenExpression>
@@ -1734,7 +1735,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_NET_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2820" y="0" width="50" height="15" uuid="c04c133d-9868-41fe-b828-adcaac745141">
+				<reportElement style="Report_Detail" x="2820" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="c04c133d-9868-41fe-b828-adcaac745141">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "055" )]]></printWhenExpression>
@@ -1742,7 +1743,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_CLOSE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2870" y="0" width="50" height="15" uuid="6504ce05-9163-4c91-a912-35429ef0525f">
+				<reportElement style="Report_Detail" x="2870" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="6504ce05-9163-4c91-a912-35429ef0525f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "056" )]]></printWhenExpression>
@@ -1750,7 +1751,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_CLOSE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2920" y="0" width="50" height="15" uuid="170512b1-1fd9-4649-bb46-09f21f9d7550">
+				<reportElement style="Report_Detail" x="2920" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="170512b1-1fd9-4649-bb46-09f21f9d7550">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "057" )]]></printWhenExpression>
@@ -1758,7 +1759,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_MARKET_AMOUNT_ALL_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2970" y="0" width="50" height="15" uuid="15b6fe68-b798-4d8b-8c3a-0f78a74f5d1f">
+				<reportElement style="Report_Detail" x="2970" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="15b6fe68-b798-4d8b-8c3a-0f78a74f5d1f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "058" )]]></printWhenExpression>
@@ -1766,7 +1767,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_MARKET_AMOUNT_ALL_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3020" y="0" width="50" height="15" uuid="d1acffd4-6e34-44c0-950c-5cc2fc1ad694">
+				<reportElement style="Report_Detail" x="3020" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="d1acffd4-6e34-44c0-950c-5cc2fc1ad694">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "059" )]]></printWhenExpression>
@@ -1774,7 +1775,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_MARKET_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3070" y="0" width="50" height="15" uuid="48675976-53a9-4ea5-a411-fcced7150dcd">
+				<reportElement style="Report_Detail" x="3070" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="48675976-53a9-4ea5-a411-fcced7150dcd">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "060" )]]></printWhenExpression>
@@ -1782,7 +1783,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_MARKET_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3120" y="0" width="50" height="15" uuid="eeb5c3c8-a772-4c4f-a6e9-1146bd064a01">
+				<reportElement style="Report_Detail" x="3120" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="eeb5c3c8-a772-4c4f-a6e9-1146bd064a01">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "061" )]]></printWhenExpression>
@@ -1790,7 +1791,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_ALL_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3170" y="0" width="50" height="15" uuid="46c55ecb-09c1-44de-9e72-cfbde868c443">
+				<reportElement style="Report_Detail" x="3170" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="46c55ecb-09c1-44de-9e72-cfbde868c443">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "062" )]]></printWhenExpression>
@@ -1798,7 +1799,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{STOCK_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3220" y="0" width="50" height="15" uuid="c677c8fd-8e4c-4d6c-9c6a-c2758b2a8358">
+				<reportElement style="Report_Detail" x="3220" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="c677c8fd-8e4c-4d6c-9c6a-c2758b2a8358">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "063" )]]></printWhenExpression>
@@ -1806,7 +1807,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_AMOUNT_ALL_RATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3270" y="0" width="50" height="15" uuid="3efd6c5c-433f-4369-a56d-6fc267315af4">
+				<reportElement style="Report_Detail" x="3270" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="3efd6c5c-433f-4369-a56d-6fc267315af4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "064" )]]></printWhenExpression>
@@ -1814,7 +1815,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SF_AMOUNT_ALL_RATE_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3320" y="0" width="50" height="15" uuid="3b716159-c980-4e63-acfd-61ab7e8fc56b">
+				<reportElement style="Report_Detail" x="3320" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="3b716159-c980-4e63-acfd-61ab7e8fc56b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "065" )]]></printWhenExpression>
@@ -1822,7 +1823,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_AVG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3370" y="0" width="50" height="15" uuid="e1a7db96-3667-4967-adda-9c9ec09f65b6">
+				<reportElement style="Report_Detail" x="3370" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="e1a7db96-3667-4967-adda-9c9ec09f65b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "066" )]]></printWhenExpression>
@@ -1830,7 +1831,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_AVG}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3420" y="0" width="50" height="15" uuid="a52e15b9-dc9e-4c58-8553-32f4446e4b73">
+				<reportElement style="Report_Detail" x="3420" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a52e15b9-dc9e-4c58-8553-32f4446e4b73">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "067" )]]></printWhenExpression>
@@ -1838,7 +1839,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{DEBIT_BALANCE_AVG_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3470" y="0" width="50" height="15" uuid="89344a16-5934-4304-895e-ba91796d6219">
+				<reportElement style="Report_Detail" x="3470" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="89344a16-5934-4304-895e-ba91796d6219">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "068" )]]></printWhenExpression>
@@ -1846,7 +1847,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{ASSURE_BALANCE_AVG_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3520" y="0" width="50" height="15" uuid="a7d16613-ba42-4548-9d41-325443f275f6">
+				<reportElement style="Report_Detail" x="3520" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="a7d16613-ba42-4548-9d41-325443f275f6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "069" )]]></printWhenExpression>
@@ -1854,7 +1855,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{MARGIN_OPEN_CUST_NUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3570" y="0" width="50" height="15" uuid="2d0bfa0d-448c-4e3a-a947-0acac17efe3b">
+				<reportElement style="Report_Detail" x="3570" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="2d0bfa0d-448c-4e3a-a947-0acac17efe3b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "070" )]]></printWhenExpression>
@@ -1862,7 +1863,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_ALL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3620" y="0" width="50" height="15" uuid="541bbd2d-af25-419f-a190-f8197f9b23c2">
+				<reportElement style="Report_Detail" x="3620" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="541bbd2d-af25-419f-a190-f8197f9b23c2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "071" )]]></printWhenExpression>
@@ -1870,7 +1871,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{COMMISSION_ALL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3670" y="0" width="50" height="15" uuid="0ecd7fc4-b848-45d5-9bc2-0823218f751b">
+				<reportElement style="Report_Detail" x="3670" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="0ecd7fc4-b848-45d5-9bc2-0823218f751b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "072" )]]></printWhenExpression>
@@ -1878,7 +1879,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{NET_COMMISSION_ALL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3720" y="0" width="50" height="15" uuid="9d41ea95-7cbe-4c4b-a1da-1aee7cdb7c8b">
+				<reportElement style="Report_Detail" x="3720" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="9d41ea95-7cbe-4c4b-a1da-1aee7cdb7c8b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "073" )]]></printWhenExpression>
@@ -1886,7 +1887,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{SFW_AMOUNT_ALL_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3770" y="0" width="50" height="15" uuid="5e173ced-4957-402a-ba53-d3059aa5f45d">
+				<reportElement style="Report_Detail" x="3770" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="5e173ced-4957-402a-ba53-d3059aa5f45d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "074" )]]></printWhenExpression>
@@ -1894,7 +1895,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{COMMISSION_ALL_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3820" y="0" width="50" height="15" uuid="559d6054-0dcc-4d7e-8326-9a85a3582164">
+				<reportElement style="Report_Detail" x="3820" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="559d6054-0dcc-4d7e-8326-9a85a3582164">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "075" )]]></printWhenExpression>
@@ -1902,7 +1903,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{NET_COMMISSION_ALL_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3870" y="0" width="50" height="15" uuid="158e9b20-bbb9-4bd3-9d91-2656cb9fc15f">
+				<reportElement style="Report_Detail" x="3870" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="158e9b20-bbb9-4bd3-9d91-2656cb9fc15f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "076" )]]></printWhenExpression>
@@ -1910,7 +1911,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{HK_STOCK_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3920" y="0" width="50" height="15" uuid="e00db2ce-b319-466c-afa6-64650ed9d92a">
+				<reportElement style="Report_Detail" x="3920" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="e00db2ce-b319-466c-afa6-64650ed9d92a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "077" )]]></printWhenExpression>
@@ -1918,7 +1919,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{HK_COMMISSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="3970" y="0" width="50" height="15" uuid="3ab5934b-6bc6-4e79-aacb-3fad58b09b6b">
+				<reportElement style="Report_Detail" x="3970" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="3ab5934b-6bc6-4e79-aacb-3fad58b09b6b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "078" )]]></printWhenExpression>
@@ -1926,7 +1927,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{HK_STOCK_AMOUNT_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="4020" y="0" width="50" height="15" uuid="287eea10-c158-4c3a-9b73-f95845ca18af">
+				<reportElement style="Report_Detail" x="4020" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="287eea10-c158-4c3a-9b73-f95845ca18af">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "079" )]]></printWhenExpression>
@@ -1934,7 +1935,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{HK_COMMISSION_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="4070" y="0" width="50" height="15" uuid="f74bf847-91b2-47b8-a84a-707e8b134cca">
+				<reportElement style="Report_Detail" x="4070" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="f74bf847-91b2-47b8-a84a-707e8b134cca">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "080" )]]></printWhenExpression>
@@ -1942,7 +1943,7 @@ order by year_main.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{HK_OPEN_CUST_NUM_Y}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="4120" y="0" width="50" height="15" uuid="487a98ca-ebb8-4553-a2d7-d31aaf43795c">
+				<reportElement style="Report_Detail" x="4120" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="487a98ca-ebb8-4553-a2d7-d31aaf43795c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{indexId}.contains( "080" )]]></printWhenExpression>

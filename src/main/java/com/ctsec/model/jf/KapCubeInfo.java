@@ -226,7 +226,7 @@ public class KapCubeInfo {
      * @mbggenerated Mon Dec 18 19:30:19 CST 2017
      */
     public void setCube_end_time(Date cube_end_time) {
-        this.cube_end_time = cube_end_time;
+        cube_end_time = this.cube_end_time;
     }
 
     /**

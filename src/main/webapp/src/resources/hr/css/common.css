@@ -634,3 +634,14 @@ padding-left:10px;padding-right: 10px;
 .train_date .ant-cascader-picker-arrow:before{
     color: #3d70e3;
 }
+.pc-filter .ant-select .ant-select-selection-selected-value{
+        max-width: 81px;
+}
+.dep_tooltop{
+    font-size: 14px;
+    position: absolute;margin-top: -32px;
+    margin-left: 84px;
+}
+.ant-tooltip-inner{
+    font-size: 14px;
+}

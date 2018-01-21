@@ -89,7 +89,8 @@ module.exports = {
             //hash: true,
             chunks: ['bundle'],
             showErrors:true,
-            baseurl:`/${APP_NAME}/`
+            baseurl:`/${APP_NAME}/`,
+            userLogHost:'172.15.1.205',
         }),
         new CopyWebpackPlugin([{
             from: `${ROOT_PATH}/resources`,

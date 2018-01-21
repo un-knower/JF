@@ -64,11 +64,11 @@ export default class Performancetrain extends Component {
 
         this.DQRankPickerDeafult = {
             Y:{
-                startDate:this.defaultDateList[this.defaultDateList.length-1],
+                startDate:this.defaultDateList[5],
                 endDate:this.defaultDateList[0]
             },
             Q:{
-                startDate:this.defaultDateList[this.defaultDateList.length-1] + '1',
+                startDate:this.defaultDateList[5] + '1',
                 endDate:this.defaultDateList[0] + '4'
             },
         }
@@ -237,6 +237,7 @@ export default class Performancetrain extends Component {
                 axisLabel:{
                     textStyle: {
                         color: '#fff',
+                        fontWeight:100
                     },
                     rotate:30,
                     interval:0
@@ -270,6 +271,7 @@ export default class Performancetrain extends Component {
                     axisLabel:{
                         textStyle: {
                             color: '#fff',
+                            fontWeight:100
                         },
                         rotate:30,
                         interval:0
@@ -330,7 +332,7 @@ export default class Performancetrain extends Component {
                         rotate:30,
                         textStyle: {
                         color: '#fff',
-                        fontWeight:'100'
+                        fontWeight:100
                     }
                     },
 
@@ -342,7 +344,7 @@ export default class Performancetrain extends Component {
                 },
 
             },
-            series:[ { barCategoryGap:'60%' } ],
+            series:[ { barCategoryGap:'60%',label:{normal:{show:false}} } ],
         }
         this.refs[`graph_bar${a}`].refreshGraph({seriesData,dataUnit,xAxisData,extraOption});
     }
@@ -360,7 +362,7 @@ export default class Performancetrain extends Component {
                     rotate:30,
                     textStyle: {
                     color: '#fff',
-                    fontWeight:'100'
+                    fontWeight:100
                 }
                 },
                 axisLine:{

@@ -10,7 +10,30 @@
 }
 .card_branch .ant-card-body .ant-card-grid,.card_branch .ant-card-body .ant-card-grid:hover{
     box-shadow:none;
-    padding: 20px 0px 0px 14px;
+    padding: 20px 0px 0px 9px;
+}
+.market_modal_footer .ant-modal-footer{
+    display: none
+}
+.market_modal_footer  .ant-modal-body{
+    min-height: 430px;    background: #46425b;
+}
+.market_modal_footer  .ant-modal-body .markets_exponent_line{
+    margin-right: -170px;
+    margin-left: -110px;
+}
+.market_modal_footer  .ant-modal-header{
+ background: #1a1629;
+
+ border-bottom: 1px solid #26203d
+}.market_modal_footer  .ant-modal-header .ant-modal-title{
+ color: #fff;
+}
+.market_modal_footer  .ant-modal-close-x:before{
+    color: #ddd
+}
+.market_modal_footer .ant-card:not(.ant-card-no-hovering):hover{
+    box-shadow:inherit;
 }
 .ant-card-grid{ width: 100%;}
 .card_branch .ant-card-grid span{

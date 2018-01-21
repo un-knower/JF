@@ -3,6 +3,7 @@ package com.ctsec.web;
 import com.ctsec.config.redis.JedisUtil;
 import com.ctsec.service.*;
 import com.ctsec.util.AppConstant;
+import com.ctsec.util.DateUtil;
 import com.ctsec.util.JsonResult;
 import com.ctsec.util.ReflectUtil;
 import com.ctsec.vo.ApiParams;
@@ -12,6 +13,7 @@ import com.ctsec.vo.TrendAnalysis;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * KPI页面调度控制层
@@ -113,6 +112,20 @@ public class KPIController {
         String yearStartDate1 = paramDateService.getKPIRightFromDay(endDate, "Y", "1");
 
         List<KPIRight> dayQueryResultList = kpiService.getDayKPIRight();
+        // 市占率要在早上9点半以后才能获取真正数据，否则会偏大很多，在此特殊处理，如果太大就先不显示
+        Double dangerMarketRate = 3.0D;
+        Date now = new Date();
+        boolean isDangerTime = false;
+        if (now.after(DateUtil.getAsertTime(8, 20)) && now.before(DateUtil.getAsertTime(9, 30))) {
+            isDangerTime = true;
+        }
+        boolean useCache = true;
+        if (isDangerTime && NumberUtils.toDouble(dayQueryResultList.get(0).getSf_amount_market_rate()) > dangerMarketRate) {
+            dayQueryResultList.get(0).setSf_amount_market_rate("-");
+            dayQueryResultList.get(0).setSf_market_rate_hb("-");
+            useCache = false;
+        }
+
         List<KPIRight> monthQueryResultList01 = kpiService.getMonthKPIRight01();
         List<KPIRight> monthQueryResultList02 = kpiService.getMonthKPIRight02();
         List<KPIRight> monthQueryResultList03 = kpiService.getKPIRight03(monthStartDate, endDate, monthStartDate1, monthEndDate1);
@@ -162,7 +175,9 @@ public class KPIController {
         /**
          * redis缓存请求结果
          */
-        jedisService.setJedisResult(redisKey, JsonResult.successJson(result).replaceAll("(-)?9999999999.(00)+", "-").replaceAll("(-)?9.999999999E9", "-"), 24 * 60 * 60);
+        if (useCache) {
+            jedisService.setJedisResult(redisKey, JsonResult.successJson(result).replaceAll("(-)?9999999999.(00)+", "-").replaceAll("(-)?9.999999999E9", "-"), 24 * 60 * 60);
+        }
 
         return JsonResult.successJson(result).replaceAll("(-)?9999999999.(00)+", "-").replaceAll("(-)?9.999999999E9", "-");
 

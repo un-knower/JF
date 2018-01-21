@@ -1,19 +1,14 @@
 package com.ctsec.util;
 
-import com.ctsec.util.AppPropertyUtil;
-
 import java.sql.*;
 
 public class KylinServerManager {
 
-//    private static final String URL = AppPropertyUtil.getProperty("datasource.kylin.url");
-//    private static final String USER = AppPropertyUtil.getProperty("datasource.kylin.userName");
-//    private static final String PASSWORD = AppPropertyUtil.getProperty("datasource.kylin.password");
+    private static final String URL = AppPropertyUtil.getProperty("datasource.kylin.url");
+    private static final String USER = AppPropertyUtil.getProperty("datasource.kylin.userName");
+    private static final String PASSWORD = AppPropertyUtil.getProperty("datasource.kylin.password");
 
-        private static final String URL = "jdbc:kylin://172.18.1.135:30001/p_jfpt";
-        private static final String USER = "ctuser";
-        private static final String PASSWORD = "ctzq123456!";
-        static {
+    static {
         try {
             Class.forName("org.apache.kylin.jdbc.Driver");
         } catch (ClassNotFoundException e) {

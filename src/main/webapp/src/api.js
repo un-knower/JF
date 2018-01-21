@@ -14,18 +14,18 @@ const serverList = {
     hrprodServer:'/hr',                                               //connect prod server
 
     //陆驰胜服务配置
-    jflcsServer:'http://172.88.66.34:80',                            //api test server -- lcs
-    hrlcsServer:'http://172.88.66.34:88',                            //api test server -- lcs
+    jflcsServer:'http://172.88.65.9:80/jf',                            //api test server -- lcs
+    hrlcsServer:'http://172.88.65.165:88',                            //api test server -- lcs
 
     //172.88.23.2 服务
-    jflTestServer:'http://172.88.5.229:8885/jf',                            //api test server -- lcs
+    jflTestServer:'http://172.88.5.229/jf',                            //api test server -- lcs
     hrlTestServer:'http://172.88.5.229/hr',
     // jflTestServer:'http://localhost/jf',
 }
 
-// const connectWho = 'jfprodServer';
-//const connectWho = 'jfprodServer';
 const connectWho = 'jfprodServer';
+//const connectWho = 'hrprodServer';
+//const connectWho = 'jflTestServer';
 //const connectWho = 'jflcsServer';
 // const connectWho = 'zrjServer';
 
@@ -708,7 +708,7 @@ export async function informationCmodelList(params={}) {
 /**
  * 关联查询数据导出
  * @param  string urlParams [description]
- * @return {[type]}           [description]
+ * @return null           [description]
  */
 export async function getRelationExport(urlParams) {
     window.open(serverList[connectWho]+'/api/relation/export?'+urlParams,'_self');
@@ -719,3 +719,18 @@ export async function getRelationExport(urlParams) {
     // }
     // return data.data.data;
 };
+
+/**
+ * 用户访问记录
+ * @param  Object [args={}] [description]
+ * @return null           [description]
+ */
+export function userActiveRecord(args={}){
+    if( args.menu != undefined && args.loginid != undefined ){
+        bd_stat_clickMenu(args.menu,args.loginid);
+    }else{
+        console.log("未记录用户操作，缺少menu或loginid！");
+        console.log(args);
+    }
+
+}

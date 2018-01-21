@@ -64,8 +64,12 @@
 		<defaultValueExpression><![CDATA["20170101"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select  a.BRANCH_CODE as BRANCH_NO,
-        b.NAME as BRANCH_NAME,
+		<![CDATA[with merge_branch as(
+select MERGE_NO,
+       BRANCH_NO
+from UF20_EDW.BRANCH_FOR_SPARK),
+main as (
+select  b1.MERGE_NO as BRANCH_CODE,
         a.CUST_NO,
         a.STOCK_ACCOUNT,
         a.OPEN_DATE,
@@ -75,17 +79,29 @@
         coalesce(sum(CHANGE_STOCK_NUM),0) as CHANGE_STOCK_NUM,
         round(cast(sum(CHANGE_STOCK_AMOUNT) as decimal),2) as CHANGE_STOCK_AMOUNT
 from REPORT.RESTRICTED_STATISTICS a
-left join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE=b.ID
+left join merge_branch b1 on a.BRANCH_CODE=b1.BRANCH_NO
 left join UF20.STKCODE c on a.STOCK_CODE=c.STOCK_CODE and a.EXCHANGE_TYPE=c.EXCHANGE_TYPE
 where c.STOCK_TYPE in ('0','c','z','h')
       and a.INIT_DATE BETWEEN $P!{startDate} and $P!{endDate}
-      and $P!{branchNo}
       and $P!{exchangeType}
       and $P!{secuCode}
       and $P!{stockAccount}
       and $P!{customerNo}
-group by a.BRANCH_CODE,b.NAME,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,a.STOCK_CODE,c.STOCK_NAME
-order by a.BRANCH_CODE,b.NAME,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,a.STOCK_CODE,c.STOCK_NAME]]>
+group by b1.MERGE_NO,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,a.STOCK_CODE,c.STOCK_NAME)
+select BRANCH_CODE as BRANCH_NO,
+       b.NAME as BRANCH_NAME,
+       a.CUST_NO, 
+       a.STOCK_ACCOUNT,
+       a.OPEN_DATE,
+       a.CUST_NAME, 
+       a.STOCK_CODE, 
+       a.STOCK_NAME, 
+       a.CHANGE_STOCK_NUM,
+       a.CHANGE_STOCK_AMOUNT
+from main a
+left join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE=b.ID
+where 1=1 and $P!{branchNo}
+order by a.BRANCH_CODE,b.NAME,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,a.STOCK_CODE,a.STOCK_NAME]]>
 	</queryString>
 	<field name="BRANCH_NO" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="BRANCH_NO"/>
@@ -240,13 +256,13 @@ order by a.BRANCH_CODE,b.NAME,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" isPrintWhenDetailOverflows="true" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -256,56 +272,56 @@ order by a.BRANCH_CODE,b.NAME,a.CUST_NO,a.STOCK_ACCOUNT,a.OPEN_DATE,a.CUST_NAME,
 				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
+				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="f88d3726-dfd3-4ca7-851a-fbd6c866bf5d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{STOCK_ACCOUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OPEN_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{STOCK_CODE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{STOCK_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CHANGE_STOCK_NUM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

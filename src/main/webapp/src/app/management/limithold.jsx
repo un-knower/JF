@@ -359,7 +359,7 @@ export default class Limithold extends Component {
         if (obj.orderKey === undefined) {
             obj.orderKey = tableTitleList[0].field_name;
             obj.order = 'desc';
-            this.setState({sortColumn:tableTitleList[0].field_name,sortType:'desc'})
+            this.setState({sortColumn:tableTitleList[2].field_name,sortType:'desc'})
         }
         //校验为空
         if (this.checkFromNull(sendParams)) {

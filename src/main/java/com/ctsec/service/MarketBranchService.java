@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface MarketBranchService {
 
-    List<MarketBranch> getMarketBranch(String endDate);
+    List<MarketBranch> getMarketBranch();
 
     List<MarketBranch> getMarketBranchIn(String secuName, String endDate);
 

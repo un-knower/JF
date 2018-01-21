@@ -18,6 +18,6 @@ public interface KLineIndexService {
      * @param startDate 日期
      * @return 返回日K指数列表
      */
-    List<KLineIndex> getDayKLine(String secuCode, String startDate);
+    List<KLineIndex> getDayKLine(String endDate, String secuCode);
 
 }

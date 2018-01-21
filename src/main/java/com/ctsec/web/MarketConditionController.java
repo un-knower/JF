@@ -78,19 +78,18 @@ public class MarketConditionController {
     @RequestMapping(value = "/kLineIndex", method = { RequestMethod.POST })
     public String kLineIndexByDay(
             @ApiParam(
-                    value = "startDate <--- 20161108\n" +
-                            "secuCode <--- 000001,399001,399005,399006"
+                    value = "secuCode <--- 000001,399001,399005,399006"
             )
             @RequestBody ApiParams apiParams
     ) {
-        String startDate = initService.paramsReplaceNull(apiParams, "startDate");
+        String endDate = paramDateService.getTradingDay(cubeInfoService.getByCube("c_jy_k_day_01").getLast_build_date().replaceAll("-", ""));
         String secuCodes = apiParams.getSecuCode();
 
         /**
          * redis缓存判断
          */
         String redisKey = "jf-" + "api/market" + "/kLineIndex"
-                + "startDate" + startDate + "secuCode" + secuCodes;
+                + "endDate" + endDate + "secuCode" + secuCodes;
         String jedisResult = jedisService.getJedisResult(redisKey);
         if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
             return jedisResult;
@@ -99,7 +98,7 @@ public class MarketConditionController {
 
         Map<String, List<KLineIndex>> result = new HashMap<>();
 
-        List<KLineIndex> queryResultList = kLineIndexService.getDayKLine(paramSecuCodes, startDate);
+        List<KLineIndex> queryResultList = kLineIndexService.getDayKLine(endDate, paramSecuCodes);
 
         String[] secuCodeList = secuCodes.split(",");
         for (String secuCode: secuCodeList ) {
@@ -252,28 +251,26 @@ public class MarketConditionController {
     @RequestMapping(value = "/branch", method = {RequestMethod.POST})
     public String branch(
             @ApiParam(
-                    value = "endDate <--- 201712"
+                    value = ""
             )
             @RequestBody ApiParams apiParams
     ) {
-        String endDate = initService.paramsReplaceNull(apiParams, "endDate");
 
         /**
          * redis缓存判断
          */
-        String redisKey = "jf-" + "api/market" + "/branch"
-                + "endDate" + endDate;
+        String redisKey = "jf-" + "api/market" + "/branch";
         String jedisResult = jedisService.getJedisResult(redisKey);
         if (jedisResult != null && !jedisResult.equals("ErrorGet!"))
             return jedisResult;
 
-        List<MarketBranch> marketBranchList = marketBranchService.getMarketBranch(endDate);
+        List<MarketBranch> marketBranchList = marketBranchService.getMarketBranch();
 
-        List<MarketBranch> marketBranchCTZQList = marketBranchService.getMarketBranchIn("财通证券股份有限公司", endDate);
+        String endDate = marketBranchList.get(0).getInit_month().substring(0,6);
 
         Map<String, Object> result = new HashMap<>();
         result.put("branch", marketBranchList);
-        result.put("ctzq", marketBranchCTZQList);
+        result.put("date", endDate);
 
         /**
          * redis缓存请求结果

@@ -66,7 +66,7 @@ export default class Performancejoin extends Component {
                     date:this.props.date.create_date,
                     formart:'YYYY-MM',
                     addType:'months',
-                    addVal:-11
+                    addVal:-13
                 }),
             },
             end: {

@@ -1,8 +1,8 @@
 const CONSTANTS = {
     APP_BASE_URL:'/jf',
-    //APP_BASE_URL:'/hr',
+    // APP_BASE_URL:'/hr',
     // APP_BASE_URL:'http://172.88.66.19:8885/jf',
-    // APP_BASE_URL:'',
+    //APP_BASE_URL:'',
     LAST_UPDATE_LIST:{},
     menu_title_map:{
         dashboard_kpi:'整体业绩看板',

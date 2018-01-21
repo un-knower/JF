@@ -82,12 +82,16 @@ export default class RankLines extends Component {
             dataZoom : {
               show : true,
               realtime:false,
-              height: 20,
+              backgroundColor: 'rgba(105,101,116,0.1)',
+              handleColor: '#fff',
+              fillerColor: 'rgba(105,101,116,.3)',
+              dataBackgroundColor: 'rgba(131,126,145,0.5)',
+              height: 22,
               start : 0,
               end : 50,
               x:100,
               textStyle:{
-                  color:'#9db7c0'
+                  color:'#fff'
               },
             },
             legend:{

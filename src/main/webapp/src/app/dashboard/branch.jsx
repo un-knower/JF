@@ -406,7 +406,8 @@ export default class CockpitBranch extends Component {
                 },{
                     label:{
                         normal:{formatter:'{c}%'}
-                    }
+                    },
+                    z:10
                 },{
                     label:{
                         normal:{show:false}
@@ -672,13 +673,14 @@ export default class CockpitBranch extends Component {
                                         <div className="ant-card-grid" ><span>部均资产(万元)</span><i>¥</i><em><Tooltip title={()=>{return this.formatNumber(item.avg_asset)+' 万'}} ><Link to={linkTo}>
                                           {item.avg_asset?this.formatNumber(item.avg_asset):'-'}
                                         </Link></Tooltip></em></div>
-                                        <div className="ant-card-grid" ><span>部均交易量(万元)</span><i>¥</i><em><Tooltip title={()=>{return this.formatNumber(item.avg_amount)+' 万'}} ><Link to={linkTo}>
-                                        {item.avg_amount?this.formatNumber(item.avg_amount):'-'}
-                                        </Link></Tooltip></em></div>
+
                                         <div className="ant-card-grid" ><span>部均新开户</span><em className="branch_center"><Tooltip title={()=>{return this.formatNumber(item.avg_cust_num)+'人'}} ><Link to={linkTo}>
                                         {item.avg_cust_num?this.formatNumber(item.avg_cust_num):'-'}
 
 
+                                    </Link></Tooltip></em></div>
+                                    <div className="ant-card-grid" ><span>部均交易量(万元)</span><i>¥</i><em><Tooltip title={()=>{return this.formatNumber(item.avg_amount)+' 万'}} ><Link to={linkTo}>
+                                    {item.avg_amount?this.formatNumber(item.avg_amount):'-'}
                                     </Link></Tooltip></em></div>
                                     </JfCard>
 
@@ -774,7 +776,7 @@ export default class CockpitBranch extends Component {
                         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                             <div className="card_layout_module">
                                 <PolarBar
-                                title={"营业部客户结构分析"}
+                                title={this.state.branchTypeName+'营业部客户结构分析'}
                                 hasTip={()=>{return this.returnTipTable('45')}}
                                 ref="graph_polarbar"
                                 />
@@ -784,7 +786,7 @@ export default class CockpitBranch extends Component {
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                             <div className="card_layout_module">
-                                <DbgridBar title={this.state.dateString+"营业部收入结构分布"}
+                                <DbgridBar title={this.state.dateString+' '+this.state.branchTypeName+'营业部收入结构分布'}
                                     hasTip={()=>{return this.returnTipTable('46')}}
                                 ref="graph_dbgridbar"
                                 />
@@ -842,15 +844,19 @@ export default class CockpitBranch extends Component {
                                                 bottom:'31%'
                                             },
                                             dataZoom : {
+                                                backgroundColor: 'rgba(105,101,116,0.1)',
+                                                handleColor: '#fff',
+                                                fillerColor: 'rgba(105,101,116,.3)',
+                                                dataBackgroundColor: 'rgba(131,126,145,0.5)',
                                               show : true,
                                               realtime:false,
                                               height: 15,
                                               x:'5%',
-                                              y:'92%',
+                                            bottom:10,
                                               start:0,
-                                              end:70,
+                                              end:90,
                                               textStyle:{
-                                                  color:'#9db7c0'
+                                                  color:'#fff'
                                               },
                                             },
 
@@ -1032,23 +1038,28 @@ export default class CockpitBranch extends Component {
                                 extraOption={{
 
                                     grid:{
-                                        left:'5%',
+                                        left:'0%',
                                         right:'4%',
                                         top:'6%',
                                         bottom:'23%',
 
+
                                     },
                                     dataZoom : {
+                                        backgroundColor: 'rgba(105,101,116,0.1)',
+                                        handleColor: '#fff',
+                                        fillerColor: 'rgba(105,101,116,.3)',
+                                        dataBackgroundColor: 'rgba(131,126,145,0.5)',
                                       show : true,
                                       realtime:false,
                                       height: 15,
                                       x:'4%',
-                                      y:'92%',
+                                    bottom:10,
                                       right:50,
                                       start:0,
-                                      end:70,
+                                      end:90,
                                       textStyle:{
-                                          color:'#9db7c0'
+                                          color:'#ffffff'
                                       },},
                                     xAxis:{
 

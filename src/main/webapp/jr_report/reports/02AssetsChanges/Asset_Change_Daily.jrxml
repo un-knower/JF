@@ -93,7 +93,7 @@
         round(cast(coalesce(OUT_LIMIT_SALE_BALANCE,0)/10000 as decimal),2) as OUT_LIMIT_SALE_BALANCE,
         round(cast(coalesce(IN_DEPOSIT_BALANCE,0)/10000 as decimal),2) as IN_DEPOSIT_BALANCE,
         round(cast(coalesce(OUT_DEPOSIT_BALANCE,0)/10000 as decimal),2) as OUT_DEPOSIT_BALANCE,
-        round(cast(coalesce(ASSET_CHANGE_RATE,0)*100 as decimal),2) as ASSET_CHANGE_RATE
+        round(cast(coalesce(ASSET_CHANGE_RATE,0)/10000 as decimal),2) as ASSET_CHANGE_RATE
 from REPORT.ASSET_CHANGE_DAILY a
 inner join UF20_EDW.DIM_BRANCH b on a.BRANCH_CODE = b.ID
 where INIT_DATE = $P!{endDate}
@@ -552,13 +552,13 @@ order by a.BRANCH_CODE]]>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
+				<reportElement style="Report_Detail" x="0" y="0" width="50" height="15" isPrintWhenDetailOverflows="true" uuid="58a2325a-d0f9-4aa9-aea0-1b2863f9ad61">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$V{ROW_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
+				<reportElement style="Report_Detail" x="50" y="0" width="120" height="15" isPrintWhenDetailOverflows="true" uuid="72022413-00ff-4fb1-835a-16dea7f125e0">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -568,217 +568,217 @@ order by a.BRANCH_CODE]]>
 				<textFieldExpression><![CDATA[$F{BRANCH_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
+				<reportElement style="Report_Detail" x="170" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="c9103e6d-db84-4b41-9ba4-d8120346ba0c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SECU_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
+				<reportElement style="Report_Detail" x="250" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="f6c8aded-5a2d-4a5d-98c4-caff0af07370">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{STOCK_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
+				<reportElement style="Report_Detail" x="330" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="5e23e93e-d5b5-40f4-bbec-f2b93a87c2f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{BONUS_IN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
+				<reportElement style="Report_Detail" x="570" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="8e955eb4-9204-49d5-ab24-1d7f9ec8515b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SH_B_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
+				<reportElement style="Report_Detail" x="650" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="ca791941-dbd7-4c4b-8b2c-42f577427052">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SZ_A_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
+				<reportElement style="Report_Detail" x="730" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="acf76649-6a8a-4d73-b3ec-2ebd5b2df1f8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SZ_B_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="810" y="0" width="80" height="15" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
+				<reportElement style="Report_Detail" x="810" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="4acc82a1-7ed3-4e59-8b35-5b2f328f1371">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{STB_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="890" y="0" width="80" height="15" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
+				<reportElement style="Report_Detail" x="890" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="52e93f38-5b9c-4631-8d7f-e559cb073ad5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{GEM_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="970" y="0" width="80" height="15" uuid="589f0e50-d241-47ea-bf05-aec0e9d56c7d">
+				<reportElement style="Report_Detail" x="970" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="589f0e50-d241-47ea-bf05-aec0e9d56c7d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{FUND_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1050" y="0" width="80" height="15" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
+				<reportElement style="Report_Detail" x="1050" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="735f5dc9-d6f4-4c6f-ac73-42a1a37bbaf2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SH_FUND_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1130" y="0" width="80" height="15" uuid="a7d1da09-1b5d-45ac-996e-ebbedbc3e494">
+				<reportElement style="Report_Detail" x="1130" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="a7d1da09-1b5d-45ac-996e-ebbedbc3e494">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SZ_FUND_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1210" y="0" width="80" height="15" uuid="51f9093f-a111-49e4-974b-997e483f66ad">
+				<reportElement style="Report_Detail" x="1210" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="51f9093f-a111-49e4-974b-997e483f66ad">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{BOND_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1290" y="0" width="80" height="15" uuid="842965e1-0f9f-4673-9cb6-47772df6f164">
+				<reportElement style="Report_Detail" x="1290" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="842965e1-0f9f-4673-9cb6-47772df6f164">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{AVIALABLE_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1530" y="0" width="80" height="15" uuid="1e770b80-dc1a-41e6-97ab-43e6fe1a2f8b">
+				<reportElement style="Report_Detail" x="1530" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="1e770b80-dc1a-41e6-97ab-43e6fe1a2f8b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ASSURE_CAPITAL_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1610" y="0" width="80" height="15" uuid="0d903170-c34c-4729-a675-86410f549cb1">
+				<reportElement style="Report_Detail" x="1610" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="0d903170-c34c-4729-a675-86410f549cb1">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ASSURE_SECU_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1690" y="0" width="80" height="15" uuid="d9114e55-0f93-4859-874b-24c522f4f08e">
+				<reportElement style="Report_Detail" x="1690" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="d9114e55-0f93-4859-874b-24c522f4f08e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{MARGIN_DEBIT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1770" y="0" width="80" height="15" uuid="bedba275-aa56-44b4-94b1-f9db37332e33">
+				<reportElement style="Report_Detail" x="1770" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="bedba275-aa56-44b4-94b1-f9db37332e33">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ASSET}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1850" y="0" width="80" height="15" uuid="27bd895c-c15a-4cc1-a507-5ec1ca754ce3">
+				<reportElement style="Report_Detail" x="1850" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="27bd895c-c15a-4cc1-a507-5ec1ca754ce3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{CAPITAL_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1930" y="0" width="80" height="15" uuid="45b87f30-e97b-4294-8106-960203c03c6d">
+				<reportElement style="Report_Detail" x="1930" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="45b87f30-e97b-4294-8106-960203c03c6d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{PLEDGE_DEBIT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2010" y="0" width="80" height="15" uuid="7db4a5e4-21ed-4d29-b8e3-812e6d13c9b9">
+				<reportElement style="Report_Detail" x="2010" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="7db4a5e4-21ed-4d29-b8e3-812e6d13c9b9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{MULTI_FINANCIAL_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2090" y="0" width="80" height="15" uuid="531ac0ed-74dc-4968-937a-07ee4f4d283c">
+				<reportElement style="Report_Detail" x="2090" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="531ac0ed-74dc-4968-937a-07ee4f4d283c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{IN_SECU_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2170" y="0" width="80" height="15" uuid="99729822-d75a-483e-88b3-dc67fa5cea2e">
+				<reportElement style="Report_Detail" x="2170" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="99729822-d75a-483e-88b3-dc67fa5cea2e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{IN_LIMIT_SALE_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2250" y="0" width="80" height="15" uuid="2d85dd06-3576-4ac2-bbc8-471cdd09031b">
+				<reportElement style="Report_Detail" x="2250" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="2d85dd06-3576-4ac2-bbc8-471cdd09031b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OUT_SECU_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2330" y="0" width="80" height="15" uuid="22faf5e9-66ea-4e01-9c06-92e7b7180e31">
+				<reportElement style="Report_Detail" x="2330" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="22faf5e9-66ea-4e01-9c06-92e7b7180e31">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OUT_LIMIT_SALE_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" uuid="23ad4f3d-ea5a-4317-b669-feb47877e379">
+				<reportElement style="Report_Detail" x="410" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="23ad4f3d-ea5a-4317-b669-feb47877e379">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{HK_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" uuid="c379ca9f-e673-4fec-bdab-4d58fed60ef8">
+				<reportElement style="Report_Detail" x="490" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="c379ca9f-e673-4fec-bdab-4d58fed60ef8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{SH_A_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1370" y="0" width="80" height="15" uuid="cdde0724-49f8-4b02-a943-a09f76fc8c18">
+				<reportElement style="Report_Detail" x="1370" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="cdde0724-49f8-4b02-a943-a09f76fc8c18">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ADVISABLE_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="1450" y="0" width="80" height="15" uuid="a08f1c5e-0ae0-414a-ae4c-70f47f802c7a">
+				<reportElement style="Report_Detail" x="1450" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="a08f1c5e-0ae0-414a-ae4c-70f47f802c7a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{ASSURE_ASSET}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2410" y="0" width="80" height="15" uuid="85895094-3db4-4eb1-a6ce-05c8c2b6fc7d">
+				<reportElement style="Report_Detail" x="2410" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="85895094-3db4-4eb1-a6ce-05c8c2b6fc7d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{IN_DEPOSIT_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2490" y="0" width="80" height="15" uuid="97466425-6b2e-42f5-b4d5-34742c75ca6d">
+				<reportElement style="Report_Detail" x="2490" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="97466425-6b2e-42f5-b4d5-34742c75ca6d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{OUT_DEPOSIT_BALANCE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Report_Detail" x="2570" y="0" width="80" height="15" uuid="c616a1b0-ce72-4f11-ae23-e05685d77290">
+				<reportElement style="Report_Detail" x="2570" y="0" width="80" height="15" isPrintWhenDetailOverflows="true" uuid="c616a1b0-ce72-4f11-ae23-e05685d77290">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

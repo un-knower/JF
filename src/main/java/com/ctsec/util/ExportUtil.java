@@ -47,29 +47,44 @@ public class ExportUtil {
             WritableSheet sheet = workbook.createSheet("Sheet1", 0);
             jxl.SheetSettings sheetset = sheet.getSettings();
             sheetset.setProtected(false);
+            //WritableFont BoldFont = new WritableFont(WritableFont.ARIAL, 10,WritableFont.BOLD);
             WritableFont NormalFont = new WritableFont(WritableFont.ARIAL, 10);
-            WritableFont BoldFont = new WritableFont(WritableFont.ARIAL, 10,WritableFont.BOLD);
-            WritableCellFormat wcf_center = new WritableCellFormat(BoldFont);
+
+            WritableCellFormat wcf_center = new WritableCellFormat(NormalFont);
             wcf_center.setBorder(Border.ALL, BorderLineStyle.THIN);
             wcf_center.setVerticalAlignment(VerticalAlignment.CENTRE);
             wcf_center.setAlignment(Alignment.CENTRE);
             wcf_center.setWrap(false);
 
             WritableCellFormat wcf_left = new WritableCellFormat(NormalFont);
-            wcf_left.setBorder(Border.NONE, BorderLineStyle.THIN);
+            wcf_left.setBorder(Border.ALL, BorderLineStyle.THIN);
             wcf_left.setVerticalAlignment(VerticalAlignment.CENTRE);
             wcf_left.setAlignment(Alignment.LEFT);
             wcf_left.setWrap(false);
 
+            sheet.setColumnView(0, 10);
+            sheet.setColumnView(1, 20);
+            sheet.setColumnView(2, 30);
+            sheet.setColumnView(3, 20);
+            sheet.setColumnView(4, 20);
+            sheet.setColumnView(5, 20);
+            sheet.setColumnView(6, 20);
+            sheet.setColumnView(7, 20);
+            sheet.setColumnView(8, 20);
+
             sheet.addCell(new Label(0, 0, title ,wcf_center));
+            sheet.mergeCells(0,0,8,0);
             for (int i = 0; i < titleArray.length; i++) {
                 sheet.addCell(new Label(i, 1,titleArray[i],wcf_center));
             }
             Field[] fields;
             int i=2;
+            Integer index = 0;
             for(Object obj:listContent){
+                ++ index;
+                sheet.addCell(new Label(0, i, index.toString() ,wcf_center));
                 fields=obj.getClass().getDeclaredFields();
-                int j=0;
+                int j=1;
                 for(Field v:fields){
                     v.setAccessible(true);
                     Object va=v.get(obj);
@@ -77,7 +92,7 @@ public class ExportUtil {
 //                        va="";
                         continue;
                     }
-                    sheet.addCell(new Label(j, i,va.toString(),wcf_left));
+                    sheet.addCell(new Label(j, i,va.toString().replaceAll("9999999999.(00)+", "-").replaceAll("9.999999999E9", "-"),wcf_center));
                     j++;
                 }
                 i++;

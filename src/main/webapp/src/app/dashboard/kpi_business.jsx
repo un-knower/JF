@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Row, Col, Table,Radio} from 'antd';
+import {Row, Col, Table,Radio,Modal} from 'antd';
 import moment from 'moment';
 import {PanelContainer,JfCard,TipTable} from 'app_common';
 const RadioButton = Radio.Button;
@@ -93,17 +93,37 @@ export default class DashboardBusiness extends Component {
             top25TableData:[],
             top25TableTitle:[],
             branchKpiRankTableData:[],
-            branchKpiRankLoading:true
+            branchKpiRankLoading:true,
+            modal1Visible: false,
+            province:'浙江'
         }
 
         this.areaDataList = [];
 
-        this.getProvinceData = this.getProvinceData.bind(this);
     }
 
-    getProvinceData(province){
-
-        const {provinceList,cityList,scatterData} = this.getCityData(province)
+    setModal1Visible(modal1Visible) {
+        this.setState({ modal1Visible,province:this.province },()=>{
+            if(modal1Visible){
+                const {provinceList,cityList,scatterData} = this.getCityData(this.province||'浙江');
+                this.refs.graph_map1_modal.refreshGraph({
+                    countryData:{name:['累计股基交易量'],data:provinceList},
+                    provinceData:{name:'累计股基交易量',data:cityList},
+                    provinceScatterData:scatterData,
+                    provinceMapUnit:'万元',
+                    countryMapUnit:'万元',
+                    provinceScatterUnit:['万元','万元','万元'],
+                    provinceScatterName:['累计股基交易量','累计考核收入','累计考核利润'],
+                    roamProvince:true
+                });
+            }
+        });
+    }
+    getProvinceData(flag,province){
+        if(flag){
+            this.province = province;
+        }
+        const {cityList,scatterData} = this.getCityData(province)
         return {
             provinceData:{name:'业务量',data:cityList},
             provinceScatterData:scatterData,
@@ -549,9 +569,27 @@ export default class DashboardBusiness extends Component {
                                     <ConnectedMap
                                         ref='graph_map1'
                                         title="营业部经营情况"
-                                        getProvinceData={this.getProvinceData}
+                                        getProvinceData={this.getProvinceData.bind(this,true)}
                                         hasTip={()=>{return this.returnTipTable('07')} }
                                     />
+                                <i className="anticon anticon-arrows-alt"  onClick={() => this.setModal1Visible(true)}></i>
+                                <Modal
+                                    title="营业部经营情况"
+                                    width={'auto'}
+
+                                    visible={this.state.modal1Visible}
+                                    onOk={() => this.setModal1Visible(false)}
+                                    onCancel={() => this.setModal1Visible(false)}
+                                    className="market_modal_footer kpi_bus_map"
+                                   >
+                                   <ConnectedMap
+                                       ref='graph_map1_modal'
+                                       getProvinceData={this.getProvinceData.bind(this,false)}
+                                       defaultProvince={this.state.province}
+                                   />
+                                   <div className="kpi_busin_text">*右图滚动鼠标滚轮可缩放</div>
+                                   </Modal>
+
                                 </div>
                             </Col>
                         </JfCard>

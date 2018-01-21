@@ -28,7 +28,7 @@ const returnBranchRankColumns = type => (
             key: 'cust_num',
 
         }, {
-            title: '资产分布(万)',
+            title: type==='1'?'资产分布(万)':'份额分布(万)',
             dataIndex: 'asset',
             key: 'asset',
         }

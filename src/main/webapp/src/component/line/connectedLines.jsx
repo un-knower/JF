@@ -3,6 +3,7 @@ import React from 'react';
 import echarts from 'echarts';
 import JfCard from '../../common/jfCard/jfCard';
 import moment from 'moment';
+import {Modal} from 'antd';
 
 /*
 extraOptions:{totalOption,branchOption,base},
@@ -28,7 +29,8 @@ class ConnectedLines extends React.Component {
         super(props);
         let _this = this;
         this.state = {
-            loading:this.props.loading ||true
+            loading:this.props.loading ||true,
+            modalVisible:false
         }
         //两个折线图公共的默认option
         this.defaultOption = {
@@ -119,7 +121,11 @@ class ConnectedLines extends React.Component {
     }
     //触发时间轴组件切换事件，切换饼图数据
     setTimeline(type,index){
-        this[type+"Chart"].dispatchAction({
+        let appendString = 'Chart';
+        if(this.state.modalVisible){
+            appendString = 'ChartModal';
+        }
+        this[type+appendString].dispatchAction({
             type: 'timelineChange',
             currentIndex: index
         });
@@ -355,11 +361,48 @@ class ConnectedLines extends React.Component {
             },this.extraOptions[type+'Option']||{});
         }
     }
+    setModalVisible(modalVisible) {
+        this.setState({ modalVisible },()=>{
+            if(!this.totalChartModal&&modalVisible){
+                let totalDomModal = this.refs.totalChart_modal;
+                this.totalChartModal = echarts.init(totalDomModal);
+                let branchDomModal = this.refs.branchChart_modal;
+                this.branchChartModal = echarts.init(branchDomModal);
+                echarts.connect([this.totalChartModal,this.branchChartModal]);
+                this.totalChartModal.setOption(this.totalOption);
+                this.branchChartModal.setOption(this.branchOption);
+            }
+        });
+    }
     render(){
+        if(this.props.largeModal){
+            return (
+                <JfCard title={this.props.title} loading={this.state.loading} hasTip={this.props.hasTip}>
+                    <div className="markets_exponent_chart ">
+                        <div ref="totalChart" style={{width:'100%',height:'50%'}}></div>
+                        <div ref="branchChart" style={{width:'100%',height:'50%'}}></div>
+                    </div>
+                    <i className="anticon anticon-arrows-alt"  onClick={() => this.setModalVisible(true)}></i>
+                    <Modal
+                        title={this.props.title}
+                        width={1000}
+                        visible={this.state.modalVisible}
+                        onOk={() => this.setModalVisible(false)}
+                        onCancel={() => this.setModalVisible(false)}
+                         className="market_modal_footer"
+                       >
+                       <div className="markets_exponent_chart market_span_1">
+                           <div ref="totalChart_modal"  className="market_modal_l"></div>
+                           <div ref="branchChart_modal"  className="market_modal_r"></div>
+                       </div>
+                     </Modal>
+                </JfCard>
+            );
+        }
         return (<JfCard title={this.props.title} loading={this.state.loading} hasTip={this.props.hasTip}>
             <div className="markets_exponent_chart">
-                <div ref="totalChart" style={{width:'100%',height:'50%'}}></div>
-                <div ref="branchChart" style={{width:'100%',height:'50%'}}></div>
+                <div ref="totalChart" style={{width:'100%',height:'50%'}} ></div>
+                <div ref="branchChart" style={{width:'100%',height:'50%'}} ></div>
             </div>
         </JfCard>);
     }

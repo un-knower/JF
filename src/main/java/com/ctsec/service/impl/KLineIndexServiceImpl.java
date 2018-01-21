@@ -28,10 +28,10 @@ public class KLineIndexServiceImpl implements KLineIndexService {
     private KLineIndexDao kLineIndexDao;
 
     @Override
-    public List<KLineIndex> getDayKLine(String secuCode, String startDate) {
+    public List<KLineIndex> getDayKLine(String endDate, String secuCode) {
 
         String sqlQuery = sqlQueryConfig.getSEL_MARKET_K_LINE_BY_DAY();
-        sqlQuery = MessageFormat.format(sqlQuery, secuCode, startDate);
+        sqlQuery = MessageFormat.format(sqlQuery, endDate, secuCode);
 
         return kLineIndexDao.selectDayKLine(sqlQuery);
     }

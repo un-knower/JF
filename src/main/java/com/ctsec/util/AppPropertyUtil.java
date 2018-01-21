@@ -18,6 +18,7 @@ public class AppPropertyUtil {
         prop = new Properties();
         try {
             prop.load(AppPropertyUtil.class.getClassLoader().getResourceAsStream("application.properties"));
+            prop.load(AppPropertyUtil.class.getClassLoader().getResourceAsStream("db_config.properties"));
             flag = false;
         } catch (IOException e) {
             e.printStackTrace();

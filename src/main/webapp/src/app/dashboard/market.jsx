@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import ReactDOM from 'react-dom';
-import {Radio,Row,Col,message} from 'antd';
+import {Radio,Row,Col,message,Modal} from 'antd';
+import moment from 'moment';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import CONSTANTS from 'app_constants';
@@ -35,10 +36,20 @@ export default class CockpitMarket extends Component {
             klineLoading:true,
             rankingTableData:[],
             rank_caitong:0,
-            modalDate:''
+            modalDate:'',
+
         }
     }
-
+    setModalVisible(modalVisible,key) {
+        let state = {};
+        state['modalVisible_'+key] = modalVisible;
+        let {dateList,priceList} = this.klineData['graph_kline'+key];
+        this.setState(state,()=>{
+            if(modalVisible){
+                this.refs['graph_kline'+key+'_modal'].refreshGraph({xAxis:dateList,series:priceList});
+            }
+        });
+    }
     radioOnChange(e){
         this.setState({
             tableLoading:true,
@@ -58,6 +69,7 @@ export default class CockpitMarket extends Component {
                 }
             }
         }
+        _this.klineData = {};
 
         //指数概览数据获取及渲染
         getKlineDate({secuCode:'000001,399001,399005,399006',startDate:'20171010'}).then(res=>{
@@ -69,13 +81,15 @@ export default class CockpitMarket extends Component {
                     dateList.push(init_date);
                     priceList.push([open_price,close_price,low_price,high_price]);
                 })
+                _this.klineData[CONSTANTS.market_kine_name_map[key]] = {
+                    dateList,priceList
+                };
                 _this.refs[CONSTANTS.market_kine_name_map[key]].refreshGraph({xAxis:dateList,series:priceList});
             }
         })
 
         _this.getTableDateFn();
-        let endDate = '201712';
-        getRankTable({endDate}).then((res)=>{
+        getRankTable({}).then((res)=>{
             let rank_caitong = 0;
             let rankingTableData = res.branch.map((item,key)=>{
                 if(item.secu_name==='财通证券股份有限公司'){
@@ -83,7 +97,7 @@ export default class CockpitMarket extends Component {
                 }
                 return {...item,key};
             });
-            this.setState({rankingTableData,rank_caitong,modalDate:endDate});
+            this.setState({rankingTableData,rank_caitong,modalDate:res.date});
         });
         this.getGraphDataFn();
     }
@@ -413,6 +427,8 @@ export default class CockpitMarket extends Component {
         return <TipTable info={info} />
     }
 
+
+
     render() {
         const PcRadio_1 = (
             <RadioGroup onChange={this.radioOnChange} defaultValue="D" size='large'>
@@ -428,21 +444,71 @@ export default class CockpitMarket extends Component {
                         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <div className="market_height">
                                 <KlineIndex title='上证指数' ref='graph_kline1' loading={this.state.klineLoading} />
+
+                                <i className="anticon anticon-arrows-alt"  onClick={() => this.setModalVisible(true,'1')}></i>
+                                <Modal
+                                    title="上证指数"
+                                    width={1000}
+                                    visible={this.state.modalVisible_1}
+                                    onOk={() => this.setModalVisible(false,'1')}
+                                    onCancel={() => this.setModalVisible(false,'1')}
+                                     className="market_modal_footer"
+                                   >
+                                   <KlineIndex ref='graph_kline1_modal'/>
+
+                                   </Modal>
                             </div>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <div className="market_height">
-                                <KlineIndex title='深圳成指' ref='graph_kline2' loading={this.state.klineLoading}/>
+                                <KlineIndex title='深圳指数' ref='graph_kline2' loading={this.state.klineLoading}/>
+                                <i className="anticon anticon-arrows-alt"  onClick={() => this.setModalVisible(true,'2')}></i>
+                                <Modal
+                                    title="深圳指数"
+                                    width={1000}
+                                    visible={this.state.modalVisible_2}
+                                    onOk={() => this.setModalVisible(false,'2')}
+                                    onCancel={() => this.setModalVisible(false,'2')}
+                                     className="market_modal_footer"
+                                   >
+                                   <KlineIndex ref='graph_kline2_modal'/>
+
+                                   </Modal>
+
                             </div>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <div className="market_height">
                                 <KlineIndex title='创业板指' ref='graph_kline4' loading={this.state.klineLoading}/>
+                                <i className="anticon anticon-arrows-alt"  onClick={() => this.setModalVisible(true,'4')}></i>
+                                <Modal
+                                    title="创业板指"
+                                    width={1000}
+                                    visible={this.state.modalVisible_4}
+                                    onOk={() => this.setModalVisible(false,'4')}
+                                    onCancel={() => this.setModalVisible(false,'4')}
+                                     className="market_modal_footer"
+                                   >
+                                   <KlineIndex ref='graph_kline4_modal'/>
+
+                                   </Modal>
                             </div>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <div className="market_height">
                                 <KlineIndex title='中小板指' ref='graph_kline3' loading={this.state.klineLoading}/>
+                                <i className="anticon anticon-arrows-alt"  onClick={() => this.setModalVisible(true,'3')}></i>
+                                <Modal
+                                    title="中小板指"
+                                    width={1000}
+                                    visible={this.state.modalVisible_3}
+                                    onOk={() => this.setModalVisible(false,'3')}
+                                    onCancel={() => this.setModalVisible(false,'3')}
+                                     className="market_modal_footer"
+                                   >
+                                   <KlineIndex ref='graph_kline3_modal'/>
+
+                                   </Modal>
                             </div>
                         </Col>
                     </Row>
@@ -455,12 +521,13 @@ export default class CockpitMarket extends Component {
                                 <IndexDotTable title='股基交易信息概览' hasTip={()=>{return this.returnTipTable('29')}} loading={this.state.tableLoading} dataSource={this.state.allTableData.stock_fund_trading} />
                             </div>
                         </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_modal_5">
                             <ConnectedLines
                                 title='全国及公司股基总市值变化'
                                 ref='graph_connectedLines'
                                 hasTip={()=>{return this.returnTipTable('30')}}
                                 loading={this.state.graphLoading}
+                                largeModal={true}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -479,12 +546,13 @@ export default class CockpitMarket extends Component {
                         <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_table_two ">
                             <IndexDotTable title='股票交易信息概览' hasTip={()=>{return this.returnTipTable('32')}} loading={this.state.tableLoading} dataSource={this.state.allTableData.stock_trading} />
                         </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_height_two market_span">
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_height_two market_span market_modal_5">
                             <ConnectedLines
                                 title='全国及公司沪深两市股票总市值趋势'
                                 ref='graph_connectedLines2'
                                 hasTip={()=>{return this.returnTipTable('33')}}
                                 loading={this.state.graphLoading}
+                                largeModal={true}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_height_two">
@@ -510,12 +578,13 @@ export default class CockpitMarket extends Component {
                                 />
                             </div>
                         </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_span">
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_span market_modal_5">
                             <ConnectedLines
                                 ref='graph_connectedLines3'
                                 title='全国及公司沪深两市基金总市值趋势'
                                 hasTip={()=>{return this.returnTipTable('36')}}
                                 loading={this.state.graphLoading}
+                                largeModal={true}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -541,12 +610,13 @@ export default class CockpitMarket extends Component {
                                 />
                             </div>
                         </Col>
-                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8} className="market_modal_5">
                             <ConnectedLines
                                 title='全国及公司融资融券余额变化'
                                 hasTip={()=>{return this.returnTipTable('39')}}
                                 ref='graph_connectedLines4'
                                 loading={this.state.graphLoading}
+                                largeModal={true}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -561,7 +631,7 @@ export default class CockpitMarket extends Component {
                     </Row>
                 </PanelContainer>
 
-                <PanelContainer title='各大券商月营业部变化情况'  hasTip={()=>{return this.returnTipTable('41')}}>
+                <PanelContainer title={moment(this.state.modalDate,'YYYYMM').format('各大券商M月营业部变化情况')}  hasTip={()=>{return this.returnTipTable('41')}}>
                     <Row gutter={8}>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} className="market_table">
                             <TableModal
